@@ -4,8 +4,8 @@ import { NAV_ITEMS } from '@/lib/siteRoutes';
 
 const SOCIAL_LINKS = [
   { href: 'mailto:jainsoham01@gmail.com', label: 'Email', icon: Mail },
-  { href: 'https://www.linkedin.com/in/soham-jain1/', label: 'LinkedIn', icon: Linkedin },
-  { href: 'https://github.com/sjain2025', label: 'GitHub', icon: Github },
+  { href: 'https://linkedin.com/in/sohamja1n', label: 'LinkedIn', icon: Linkedin },
+  { href: 'https://github.com/s0hamjain', label: 'GitHub', icon: Github },
   { href: 'https://www.youtube.com/@CodingWithSohamJain', label: 'YouTube', icon: Youtube },
 ];
 

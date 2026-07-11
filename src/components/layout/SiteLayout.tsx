@@ -24,11 +24,12 @@ const SiteLayout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="fixed left-1/2 top-4 z-50 w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2">
+      {!isHome && (
+        <header className="fixed left-0 right-0 top-4 z-50">
         {/* Desktop: centered pill of tabs */}
         <nav
           aria-label="Primary"
-          className="hidden items-center gap-1 rounded-full border border-slate-700/60 bg-[#131318]/85 p-1.5 shadow-lg shadow-black/40 backdrop-blur-md md:flex"
+          className="mx-auto hidden w-max items-center gap-1 rounded-full border border-slate-700/60 bg-[#131318]/85 p-1.5 shadow-lg shadow-black/30 backdrop-blur-md md:flex"
         >
           {NAV_ITEMS.map(({ to, label }) => (
             <NavLink key={to} to={to} end={to === paths.home} className={navLinkClass}>
@@ -37,32 +38,32 @@ const SiteLayout = () => {
           ))}
         </nav>
 
-        {/* Mobile: compact pill with hamburger */}
-        <div className="relative md:hidden">
-          <div className="flex items-center gap-2 rounded-full border border-slate-700/60 bg-[#131318]/85 py-1.5 pl-4 pr-1.5 shadow-lg shadow-black/40 backdrop-blur-md">
-            <Link to={paths.home} className="text-sm font-semibold text-slate-100">
-              Soham Jain
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
-              className={cn(
-                'flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200',
-                menuOpen
-                  ? 'bg-slate-700/60 text-slate-100'
-                  : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-100'
-              )}
-            >
-              {menuOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
-            </button>
-          </div>
+        {/* Mobile: name centered, hamburger top right */}
+        <div className="relative flex items-center justify-between px-4 md:hidden">
+          <span className="h-9 w-9" aria-hidden />
+          <Link
+            to={paths.home}
+            className="rounded-full border border-slate-700/60 bg-[#131318]/85 px-4 py-1.5 text-sm font-semibold text-slate-100 shadow-lg shadow-black/30 backdrop-blur-md"
+          >
+            Soham Jain
+          </Link>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-full border border-slate-700/60 bg-[#131318]/85 text-slate-300 shadow-lg shadow-black/30 transition-colors duration-200 backdrop-blur-md',
+              menuOpen ? 'bg-slate-700/70 text-slate-100' : 'hover:bg-slate-800/70 hover:text-slate-100'
+            )}
+          >
+            {menuOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+          </button>
 
           {menuOpen && (
             <nav
               aria-label="Primary"
-              className="absolute left-1/2 top-full mt-2 flex w-56 -translate-x-1/2 flex-col gap-1 rounded-2xl border border-slate-700/60 bg-[#131318]/95 p-2 shadow-xl shadow-black/50 backdrop-blur-md"
+              className="absolute right-4 top-[3.25rem] flex w-56 flex-col gap-1 rounded-2xl border border-slate-700/60 bg-[#131318]/95 p-2 shadow-xl shadow-black/40 backdrop-blur-md"
             >
               {NAV_ITEMS.map(({ to, label }) => (
                 <NavLink
@@ -84,7 +85,8 @@ const SiteLayout = () => {
             </nav>
           )}
         </div>
-      </header>
+        </header>
+      )}
 
       <Outlet />
 

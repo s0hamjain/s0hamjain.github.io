@@ -77,7 +77,7 @@ const Research = () => {
 
   return (
     <SectionShell id="research">
-      <SectionHeader kicker="research" title="Research & Publications" />
+      <SectionHeader title="Research & Publications" />
 
       <div className="space-y-8">
         {publications.map((pub, index) => (

@@ -8,18 +8,18 @@ const NAME_TYPEWRITER = 'Soham Jain';
 
 const INTRO_COMMAND = 'cat sections.txt';
 
-const NAME_TYPING_DURATION_MS = 900;
+const NAME_TYPING_MS = 60;
 const TERMINAL_TYPING_MS = 50;
 
 const SOCIAL_LINKS = [
   { href: 'mailto:jainsoham01@gmail.com', label: 'Email', icon: Mail, colorClass: 'text-rose-400' },
   {
-    href: 'https://www.linkedin.com/in/soham-jain1/',
+    href: 'https://linkedin.com/in/sohamja1n',
     label: 'LinkedIn',
     icon: Linkedin,
     colorClass: 'text-blue-400',
   },
-  { href: 'https://github.com/sjain2025', label: 'GitHub', icon: Github, colorClass: 'text-slate-300' },
+  { href: 'https://github.com/s0hamjain', label: 'GitHub', icon: Github, colorClass: 'text-slate-300' },
   {
     href: 'https://www.youtube.com/@CodingWithSohamJain',
     label: 'YouTube',
@@ -28,15 +28,14 @@ const SOCIAL_LINKS = [
   },
 ];
 
-const ROLES = ['Software Engineer', 'AI Researcher', 'Innovator'];
+const ROLES = ['Student', 'Software Engineer', 'AI Developer'];
 
 const Hero = () => {
   const navigate = useNavigate();
-  const [nameProgress, setNameProgress] = useState(0);
+  const [nameChars, setNameChars] = useState(0);
   const [terminalChars, setTerminalChars] = useState(0);
   const [showSections, setShowSections] = useState(false);
   const [cursorVisible, setCursorVisible] = useState(true);
-  const nameStartRef = useRef<number | null>(null);
   const nameMeasureRef = useRef<HTMLSpanElement>(null);
   const [nameGradientWidthPx, setNameGradientWidthPx] = useState<number>();
 
@@ -59,22 +58,13 @@ const Hero = () => {
     return () => ro.disconnect();
   }, [updateNameGradientWidth]);
 
-  // Name typing: rAF-driven linear progress for a constant speed.
+  // Name typing: match terminal typing cadence.
   useEffect(() => {
-    let rafId: number;
-    const tick = (timestamp: number) => {
-      if (nameStartRef.current === null) nameStartRef.current = timestamp;
-      const elapsed = timestamp - nameStartRef.current;
-      const t = Math.min(elapsed / NAME_TYPING_DURATION_MS, 1);
-      setNameProgress(t * NAME_TYPEWRITER.length);
-      if (t < 1) rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
-
-  const nameChars = Math.floor(nameProgress);
-  const nameTyping = nameChars < NAME_TYPEWRITER.length;
+    if (nameChars < NAME_TYPEWRITER.length) {
+      const t = setTimeout(() => setNameChars((c) => c + 1), NAME_TYPING_MS);
+      return () => clearTimeout(t);
+    }
+  }, [nameChars]);
 
   // Terminal typing: type command, then reveal section links.
   useEffect(() => {
@@ -93,7 +83,7 @@ const Hero = () => {
   }, []);
 
   const terminalTyping = terminalChars < INTRO_COMMAND.length;
-  const heroCursorOn = nameTyping || cursorVisible;
+  const heroCursorOn = nameChars < NAME_TYPEWRITER.length || cursorVisible;
   const terminalCursorOn = terminalTyping || cursorVisible;
 
   return (
@@ -103,7 +93,7 @@ const Hero = () => {
     >
       <div className="bg-grid pointer-events-none absolute inset-0 z-0" aria-hidden />
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-4 pb-10 pt-24 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
         {/* "Hi, I'm" + name. The invisible sizer reserves the final width so the
             centered line never shifts while characters are typed (no stutter). */}
         <div className="mb-8 text-center lg:mb-10">
@@ -120,7 +110,7 @@ const Hero = () => {
               <span className="absolute left-0 top-0 whitespace-nowrap">
                 <span className="text-slate-300">Hi, I'm </span>
                 <span
-                  className="inline-block bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 bg-clip-text bg-no-repeat text-transparent [background-clip:text] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]"
+                  className="inline-block bg-gradient-to-r from-sky-400 via-violet-400 to-blue-500 bg-clip-text bg-no-repeat text-transparent [background-clip:text] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]"
                   style={
                     nameGradientWidthPx != null
                       ? {
@@ -157,18 +147,20 @@ const Hero = () => {
 
         {/* Terminal + photo */}
         <div className="flex w-full flex-col items-center justify-center gap-6 lg:flex-row lg:gap-8">
-          <div className="card-surface shadow-terminal mx-auto w-full max-w-xl overflow-hidden lg:mx-0">
-            <div className="flex items-center gap-2 border-b border-slate-700/60 bg-[#2d2d2d] px-4 py-3">
-              <div className="flex gap-2">
+          <div className="card-surface shadow-terminal order-2 mx-auto w-full max-w-xl overflow-hidden lg:order-1 lg:mx-0">
+            <div className="relative flex items-center gap-2 border-b border-slate-700/60 bg-[#2d2d2d] px-4 py-3">
+              <div className="relative z-10 flex gap-2">
                 <div className="h-3 w-3 rounded-full bg-[#ff5f57]" title="Close" />
                 <div className="h-3 w-3 rounded-full bg-[#febc2e]" title="Minimize" />
                 <div className="h-3 w-3 rounded-full bg-[#28c840]" title="Maximize" />
               </div>
-              <span className="flex-1 text-center font-mono text-xs tracking-wide text-slate-400">
-                portfolio — zsh
-              </span>
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-20">
+                <span className="text-center font-mono text-xs tracking-wide text-slate-400">
+                  portfolio — zsh
+                </span>
+              </div>
             </div>
-            <div className="flex h-[360px] flex-col overflow-hidden bg-[#1a1a1f] p-4 font-mono text-sm sm:p-5 sm:text-base">
+            <div className="flex h-[300px] flex-col overflow-hidden bg-[#1a1a1f] p-4 font-mono text-sm sm:h-[320px] sm:p-5 sm:text-base lg:h-[360px]">
               <div className="mb-2 flex shrink-0 flex-wrap items-center gap-1">
                 <span className="shrink-0 text-emerald-400">{'~'}</span>
                 <span className="shrink-0 text-slate-500">{' $ '}</span>
@@ -200,8 +192,8 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="flex flex-shrink-0 justify-center lg:ml-12 lg:items-start lg:justify-end">
-            <div className="card-surface shadow-terminal relative h-72 w-72 overflow-hidden sm:h-80 sm:w-80 lg:h-[408px] lg:w-[408px]">
+          <div className="order-1 flex flex-shrink-0 justify-center lg:order-2 lg:ml-12 lg:items-start lg:justify-end">
+            <div className="card-surface shadow-terminal relative h-56 w-56 overflow-hidden sm:h-72 sm:w-72 lg:h-[380px] lg:w-[380px]">
               <img
                 src={profileImage}
                 alt="Soham Jain"
@@ -213,7 +205,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="mt-10 flex justify-center gap-4">
+        <div className="mt-6 flex justify-center gap-4">
           {SOCIAL_LINKS.map(({ href, label, icon: Icon, colorClass }) => (
             <a
               key={label}

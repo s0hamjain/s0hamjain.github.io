@@ -16,7 +16,7 @@ const Resume = () => {
 
   return (
     <SectionShell id="about" containerClassName="max-w-7xl">
-      <SectionHeader kicker="resume" title="Resume" />
+      <SectionHeader title="Resume" />
 
       <div className="mx-auto w-[min(100%,57rem)]">
         <div className="card-surface shadow-terminal overflow-hidden">
@@ -45,7 +45,7 @@ const Resume = () => {
                 </Button>
               </div>
             </div>
-            <div className="relative bg-[#111118]" style={{ height: '1075px' }}>
+          <div className="relative bg-[#111118]" style={{ height: 'min(78vh, 960px)' }}>
               <iframe
                 src={`${resumePdf}#toolbar=0&navpanes=0&scrollbar=0`}
                 className="w-full h-full border-0"

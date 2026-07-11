@@ -15,64 +15,47 @@ interface ExperienceItem {
 const Experience = () => {
   const experiences: ExperienceItem[] = [
     {
+      company: 'The Washington Post',
+      position: 'Software Engineer Intern',
+      period: 'Jun 2026 – Present',
+      location: 'Washington, DC',
+      achievements: [
+        'Build a complaint dispatch application for 2.5M+ digital and print subscribers using React, TypeScript, Express.js, and MySQL, helping carriers resolve service issues 40% faster.',
+        'Automate build, test, and deployment lifecycles for 6 full-stack apps by designing Jenkins pipelines with Groovy and Docker containerized agents.',
+        'Deploy 35+ microservices to ECS via AWS CDK stacks in Java that provision Route 53 DNS and load balancing automatically.',
+      ],
+      technologies: ['React', 'TypeScript', 'Express.js', 'MySQL', 'Jenkins', 'Groovy', 'Docker', 'AWS'],
+    },
+    {
       company: 'ScottyLabs',
-      position: 'Software Engineer',
-      period: 'Aug 2025 – Present',
+      position: 'Software Developer Intern',
+      period: 'Aug 2025 – May 2026',
       location: 'Pittsburgh, PA',
       achievements: [
-        'Integrate live data from Dining Services into CMUEats using React, TypeScript, and Railway, streamlining menus and specials for 10,000+ users each month across mobile and web.',
-        'Lead the development of a geospatial routing system with JavaScript and REST APIs to rank dining locations by walking distance, resulting in a 30–50% reduction in search time.',
-        'Automate CI/CD pipelines for 50+ developers with GitHub Actions and Docker to enforce linting and unit testing.',
+        'Developed a campus dining PWA with React, Vite, JavaScript, and TypeScript for 10,000+ students across 30+ locations.',
+        'Engineered a Node.js web scraping service on Railway that serves dining data across 8 REST endpoints with 99% uptime.',
+        'Led distance-based and rating-based sorting features using React Query and geolocation data, tripling daily active sessions.',
+        'Configured GitHub Actions pipelines with Vitest and Oxlint to catch type and style issues before production.',
       ],
-      technologies: [
-        'React',
-        'TypeScript',
-        'Railway',
-        'JavaScript',
-        'REST APIs',
-        'GitHub Actions',
-        'Docker',
-      ],
+      technologies: ['React', 'Vite', 'JavaScript', 'TypeScript', 'Node.js', 'Railway', 'REST APIs', 'GitHub Actions'],
     },
     {
       company: 'Vytal.AI',
-      position: 'Software Engineer',
-      period: 'May 2022 – Feb 2025',
-      location: 'Alexandria, VA',
+      position: 'Software Engineer Intern',
+      period: 'May 2022 – Oct 2024',
+      location: 'McLean, VA',
       achievements: [
-        'Developed a mobile application that analyzes ocular biometrics using OpenCV and Next.js to quantify brain health in under 30 seconds.',
-        'Optimized Python pipelines and deployed ML models on AWS EC2 and MongoDB to scale to 300 clinical beta users.',
-        'Implemented OCR-driven PDF parsing using Agile methodologies like sprint cycles and stand-ups, decreasing the average processing time for uploaded health records by 90 seconds.',
+        'Created a gaze-tracking assessment platform with Python, Flask, Next.js, and HTML/CSS that processes 10,000+ ocular data points in under 30 seconds.',
+        'Managed MongoDB storage and AWS EC2 deployments to serve 300+ clinical beta users.',
+        'Collaborated across software engineering and ML teams via Agile sprints with Jira and Notion, delivering features biweekly.',
       ],
-      technologies: ['OpenCV', 'Next.js', 'Python', 'AWS EC2', 'MongoDB', 'Agile'],
-    },
-    {
-      company: 'Virginia Tech',
-      position: 'Computer Science Research Intern',
-      period: 'Apr 2024 – Jan 2025',
-      location: 'Blacksburg, VA',
-      achievements: [
-        'Spearheaded research with a team of 10+ developers to develop algorithms for constraint satisfaction problems in C# and Python, reducing computation time by up to 65% compared to standard recursive methods.',
-        'Implemented object-oriented programming architecture for nodes and edges, solving the graph coloring problem on a map of the United States in less than 25 seconds.',
-      ],
-      technologies: ['C#', 'Python', 'Algorithms', 'OOP'],
-    },
-    {
-      company: 'George Mason University',
-      position: 'Machine Learning Research Intern',
-      period: 'Jun 2023 – Jan 2024',
-      location: 'Fairfax, VA',
-      achievements: [
-        "Published a first-author paper in the Journal of Student-Scientists' Research, introducing a web dashboard built with Flask and HTML/CSS to standardize five technical metrics for analyzing molecular dynamics simulations.",
-        'Visualized data for 20,000+ simulations with Matplotlib, cutting evaluation time from 12 hours to under 25 minutes.',
-      ],
-      technologies: ['Flask', 'Python', 'HTML/CSS', 'Matplotlib', 'Molecular Dynamics'],
+      technologies: ['Python', 'Flask', 'Next.js', 'HTML/CSS', 'MongoDB', 'AWS EC2', 'Jira'],
     },
   ];
 
   return (
     <SectionShell id="experience">
-      <SectionHeader kicker="experience" title="Work Experience" />
+      <SectionHeader title="Work Experience" />
 
       <div className="flex w-full flex-col gap-10 md:gap-12">
         {experiences.map((exp, index) => (

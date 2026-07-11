@@ -1,128 +1,204 @@
-import { ExternalLink, Github, Smartphone, Eye, Users, Utensils, Brain } from 'lucide-react';
+import { ExternalLink, Github, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SectionShell from '@/components/layout/SectionShell';
 import SectionHeader from '@/components/layout/SectionHeader';
 import TechBadge from '@/components/TechBadge';
+import spryntImage from '@/assets/projects/sprynt.png';
+import routineRemindImage from '@/assets/projects/routineremind.jpg';
+import eyelsImage from '@/assets/projects/eyels.jpg';
+
+interface ProjectLinks {
+  demo: string;
+  github: string;
+  demoLabel: string;
+}
+
+interface Project {
+  title: string;
+  description: string;
+  period: string;
+  technologies: string[];
+  links: ProjectLinks | null;
+  image: string | null;
+  imageAlt: string;
+}
+
+const projects: Project[] = [
+  {
+    title: "Sprynt",
+    description: "Incident response platform that keeps on-call engineers aligned during live outages with a shared workspace for investigation, action items, and AI-assisted analysis.",
+    period: "Mar 2026 - Present",
+    technologies: [
+      "Next.js",
+      "React",
+      "WebSockets",
+      "FastAPI",
+      "PostgreSQL",
+      "AWS S3",
+      "Jira",
+      "OAuth 2.0"
+    ],
+    links: {
+      demo: "https://sprynt-mu.vercel.app/",
+      github: "https://github.com/kanisiva2/Sprynt",
+      demoLabel: "Visit Site"
+    },
+    image: spryntImage,
+    imageAlt: "Sprynt landing page showing the live incident workspace"
+  },
+  {
+    title: "RoutineRemind",
+    description: "Patent-pending Android + web app that helps children with autism follow daily routines through visual task cards and an AI chatbot.",
+    period: "Jun 2022 - Aug 2025",
+    technologies: [
+      "Kotlin",
+      "Java",
+      "Spring Boot",
+      "Angular",
+      "C++",
+      "Google Cloud Platform",
+      "Docker"
+    ],
+    links: {
+      demo: "https://www.congressionalappchallenge.us/22-va10/",
+      github: "https://github.com/s0hamjain/RoutineRemind",
+      demoLabel: "Read More"
+    },
+    image: routineRemindImage,
+    imageAlt: "RoutineRemind title card from the Congressional App Challenge demo video"
+  },
+  {
+    title: "EyeLS",
+    description: "Accessible gaze-tracking web application designed to enable ALS patients to communicate nonverbally using precise eye movement detection.",
+    period: "Aug 2023 - Present",
+    technologies: ["JavaScript", "HTML/CSS", "Computer Vision", "Kalman Filtering", "Monte Carlo"],
+    links: {
+      demo: "https://www.youtube.com/watch?v=YAlBLGYtgLA",
+      github: "https://github.com/s0hamjain/EyeLS",
+      demoLabel: "View Demo"
+    },
+    image: eyelsImage,
+    imageAlt: "EyeLS demo video title slide with gaze-tracking keyboard"
+  },
+  {
+    title: "NeurOS",
+    description: "Smartphone AI application that quantifies brain health using gaze-tracking algorithms during my time at Vytal.AI.",
+    period: "May 2022 - Present",
+    technologies: ["React Native", "Python", "AI/ML", "Mobile Development", "Computer Vision"],
+    links: null,
+    image: null,
+    imageAlt: "NeurOS"
+  }
+];
+
+const ProjectVisual = ({ project }: { project: Project }) => {
+  if (project.image) {
+    const visual = (
+      <div className="relative h-full min-h-[220px] overflow-hidden sm:min-h-[280px]">
+        <img
+          src={project.image}
+          alt={project.imageAlt}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
+      </div>
+    );
+
+    if (project.links?.demo) {
+      return (
+        <a
+          href={project.links.demo}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${project.title}`}
+          className="block h-full"
+        >
+          {visual}
+        </a>
+      );
+    }
+    return visual;
+  }
+
+  // Fallback panel for projects without a live site to capture.
+  return (
+    <div className="bg-grid relative flex h-full min-h-[220px] items-center justify-center overflow-hidden bg-slate-900/60 sm:min-h-[280px]">
+      <div className="absolute inset-0 bg-gradient-to-br from-sky-500/15 via-transparent to-violet-500/20" />
+      <div className="relative flex flex-col items-center gap-4">
+        <span className="absolute -inset-8 animate-ping rounded-full border border-sky-400/20 [animation-duration:2.5s]" />
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/10 text-sky-300">
+          <Brain className="h-10 w-10" />
+        </div>
+        <p className="font-mono text-sm text-slate-400">gaze_tracking.model — loaded</p>
+      </div>
+    </div>
+  );
+};
 
 const Projects = () => {
-  const projects = [
-    {
-      title: "RoutineRemind",
-      description: "Provisional patented, utility patent-pending scheduling application specifically designed for individuals with speech and cognitive disabilities. Currently being deployed on both Google Play Store and Apple App Store.",
-      icon: <Smartphone className="h-7 w-7" />,
-      period: "June 2022 - Present",
-      technologies: ["React", "JavaScript", "TypeScript", "Python", "HTML/CSS", "Firebase", "Rasa"],
-      links: {
-        demo: "https://www.congressionalappchallenge.us/22-va10/",
-        github: "https://github.com/sjain2025/RoutineRemind"
-      }
-    },
-    {
-      title: "EyeLS",
-      description: "Gaze-tracking web application designed to enable ALS patients to communicate nonverbally. Implements Kalman Filtering and Monte Carlo algorithms for precise eye movement detection.",
-      icon: <Eye className="h-7 w-7" />,
-      period: "August 2023 - Present",
-      technologies: ["JavaScript", "HTML/CSS", "Computer Vision", "Kalman Filtering", "Monte Carlo"],
-      links: {
-        demo: "https://www.youtube.com/watch?v=YAlBLGYtgLA",
-        github: "https://github.com/sjain2025/EyeLS"
-      }
-    },
-    {
-      title: "CMUEats",
-      description: "Comprehensive dining locations website for Carnegie Mellon University, providing real-time information about campus dining options, hours, and menus. Developed as part of ScottyLabs student organization.",
-      icon: <Utensils className="h-7 w-7" />,
-      period: "August 2025 - Present",
-      technologies: ["Vite", "React", "TypeScript", "HTML", "Vanilla CSS", "Elysia"],
-      links: {
-        demo: "https://cmueats.com/",
-        github: "https://github.com/ScottyLabs/cmueats"
-      }
-    },
-    {
-      title: "Memory Lane",
-      description: "Mobile application designed to provide people with Alzheimer's and other memory loss-related conditions with a platform to replay memories from their past. The app requires a login through email for each user, and upon authentication, the user is presented with three options: Add an entry, Ask a question, and a unique feature called \"A Memory A Day.\"",
-      icon: <Brain className="h-7 w-7" />,
-      period: "March 2023 - June 2024",
-      technologies: ["React Native", "JavaScript", "Firebase", "TypeScript", "HTML/CSS"],
-      links: {
-        demo: "https://www.youtube.com/watch?v=ySS6zBkvRq4",
-        github: "https://github.com/sjain2025/MemoryLane"
-      }
-    },
-    {
-      title: "NeurOS",
-      description: "Smartphone AI application that quantifies brain health using gaze-tracking algorithms. Developed during my time at Vytal.AI.",
-      icon: <Users className="h-7 w-7" />,
-      period: "May 2022 - Present",
-      technologies: ["React Native", "Python", "AI/ML", "Mobile Development", "Computer Vision"],
-      links: {
-        demo: "#",
-        github: "#"
-      }
-    }
-  ];
-
   return (
-    <SectionShell id="projects" containerClassName="max-w-7xl">
-      <SectionHeader kicker="projects" title="Featured Projects" />
+    <SectionShell id="projects" containerClassName="max-w-6xl">
+      <SectionHeader title="Featured Projects" />
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="flex flex-col gap-10">
         {projects.map((project, index) => (
           <article
             key={project.title}
-            className={`card-surface shadow-card-glow animate-fade-up group flex flex-col p-6 transition-colors duration-300 hover:border-slate-600/60 md:p-8 ${project.title === "NeurOS" ? "lg:col-span-2 lg:mx-auto lg:w-full lg:max-w-2xl" : ""}`}
+            className="card-surface shadow-card-glow animate-fade-up group overflow-hidden transition-colors duration-300 hover:border-slate-600/60"
             style={{ animationDelay: `${index * 0.08}s` }}
           >
-            <header className="mb-5 flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
-                {project.icon}
+            <div className={`grid lg:grid-cols-2 ${index % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
+              <div className={`border-b border-border/60 lg:border-b-0 [direction:ltr] ${index % 2 === 1 ? 'lg:border-l' : 'lg:border-r'}`}>
+                <ProjectVisual project={project} />
               </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
-                  {project.title}
-                </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{project.period}</p>
-              </div>
-            </header>
 
-            <p className="mb-6 text-base leading-relaxed text-foreground/75">
-              {project.description}
-            </p>
+              <div className="flex flex-col p-6 [direction:ltr] md:p-10">
+                <header className="mb-4">
+                  <h3 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                    {project.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{project.period}</p>
+                </header>
 
-            <div className="mt-auto">
-              <div className="border-t border-border/60 pt-5">
-                <p className="mb-3 text-sm font-semibold text-foreground">Technologies</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
-                    <TechBadge key={`${project.title}-${tech}`} name={tech} />
-                  ))}
+                <p className="mb-6 text-base leading-relaxed text-foreground/75">
+                  {project.description}
+                </p>
+
+                <div className="mt-auto">
+                  <div className="border-t border-border/60 pt-5">
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech) => (
+                        <TechBadge key={`${project.title}-${tech}`} name={tech} />
+                      ))}
+                    </div>
+                  </div>
+
+                  {project.links && (
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      <Button
+                        className="flex-1 border-0 bg-primary font-medium text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 hover:shadow-lg sm:flex-none"
+                        asChild
+                      >
+                        <a href={project.links.demo} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          {project.links.demoLabel}
+                        </a>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100 sm:flex-none"
+                        asChild
+                      >
+                        <a href={project.links.github} target="_blank" rel="noopener noreferrer">
+                          <Github className="mr-2 h-4 w-4" />
+                          Source Code
+                        </a>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {project.title !== "NeurOS" && (
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Button
-                    className="flex-1 border-0 bg-primary font-medium text-primary-foreground shadow-md shadow-primary/25 transition-all duration-200 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 sm:flex-none"
-                    asChild
-                  >
-                    <a href={project.links.demo} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      {project.title === "RoutineRemind" ? "Read More" : project.title === "CMUEats" ? "View Website" : "View Demo"}
-                    </a>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100 sm:flex-none"
-                    asChild
-                  >
-                    <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-                      <Github className="mr-2 h-4 w-4" />
-                      Source Code
-                    </a>
-                  </Button>
-                </div>
-              )}
             </div>
           </article>
         ))}
@@ -138,7 +214,7 @@ const Projects = () => {
           className="border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100"
           asChild
         >
-          <a href="https://github.com/sjain2025" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/s0hamjain" target="_blank" rel="noopener noreferrer">
             <Github className="mr-2 h-5 w-5" />
             View All Projects
           </a>
