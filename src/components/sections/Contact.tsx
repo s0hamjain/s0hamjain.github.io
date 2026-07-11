@@ -3,70 +3,45 @@ import { CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import SectionShell from '@/components/layout/SectionShell';
+import SectionHeader from '@/components/layout/SectionHeader';
 
 const Contact = () => {
   const [state, handleSubmit] = useForm('mjgedlad');
 
   if (state.succeeded) {
     return (
-      <section id="contact" className="min-h-screen relative py-24 flex flex-col items-center justify-center">
-        <div className="absolute inset-0 z-0 bg-[#0b0c0f]" />
-        <div
-          className="absolute inset-0 z-0 opacity-[0.035]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(148, 163, 184, 0.15) 1px, transparent 1px)
-            `,
-            backgroundSize: '28px 28px',
-          }}
-        />
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 animate-fade-up">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-white">
-            Contact Me
-          </h2>
+      <SectionShell id="contact" containerClassName="max-w-4xl">
+        <div className="animate-fade-up">
+          <SectionHeader kicker="contact" title="Contact Me" />
           <div
-            className="rounded-2xl border border-slate-600/50 bg-[#1e1e24] p-12 sm:p-16 shadow-xl shadow-black/30 flex flex-col items-center justify-center text-center"
+            className="card-surface flex flex-col items-center justify-center p-12 text-center sm:p-16"
             style={{
-              boxShadow: '0 0 0 1px rgba(148, 163, 184, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 60px -10px rgba(34, 197, 94, 0.2)',
+              boxShadow:
+                '0 0 0 1px rgba(148, 163, 184, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 60px -10px rgba(34, 197, 94, 0.2)',
             }}
           >
-            <div className="rounded-full bg-emerald-500/10 p-4 mb-6">
+            <div className="mb-6 rounded-full bg-emerald-500/10 p-4">
               <CheckCircle2 className="h-14 w-14 text-emerald-400" strokeWidth={1.5} />
             </div>
-            <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-2">
+            <h3 className="mb-2 text-2xl font-semibold text-white sm:text-3xl">
               Message sent
             </h3>
-            <p className="text-white text-base sm:text-lg whitespace-nowrap">
+            <p className="text-base text-white sm:text-lg">
               Thanks for reaching out! I&apos;ll get back to you soon.
             </p>
           </div>
         </div>
-      </section>
+      </SectionShell>
     );
   }
 
   return (
-    <section id="contact" className="min-h-screen relative py-24 flex flex-col items-center justify-center">
-      {/* Same background as hero */}
-      <div className="absolute inset-0 z-0 bg-[#0b0c0f]" />
-      <div
-        className="absolute inset-0 z-0 opacity-[0.035]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148, 163, 184, 0.15) 1px, transparent 1px)
-          `,
-          backgroundSize: '28px 28px',
-        }}
-      />
+    <SectionShell id="contact" containerClassName="max-w-4xl">
+      <div className="animate-fade-up">
+        <SectionHeader kicker="contact" title="Contact Me" />
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 animate-fade-up">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-white">
-          Contact Me
-        </h2>
-
-        <div className="rounded-2xl border border-slate-600/50 bg-[#1e1e24] p-10 shadow-xl shadow-black/30">
+        <div className="card-surface shadow-card-glow p-6 sm:p-10">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-5">
               <div className="space-y-2">
@@ -148,7 +123,7 @@ const Contact = () => {
           </form>
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 };
 

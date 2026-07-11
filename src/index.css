@@ -6,7 +6,8 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
+    /* Matches the hero's #0b0c0f so every page shares one base */
+    --background: 225 15% 5%;
     --foreground: 0 0% 98%;
 
     --card: 240 10% 7%;
@@ -122,6 +123,38 @@
 }
 
 @layer utilities {
+  /* Shared subtle grid overlay used behind every section */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Signature card surface (terminal windows, section cards) */
+  .card-surface {
+    border-radius: 1rem;
+    border: 1px solid rgba(51, 65, 85, 0.5); /* slate-700/50 */
+    background-color: #15151a;
+  }
+
+  /* Strong glow for hero terminal / feature windows */
+  .shadow-terminal {
+    box-shadow:
+      0 0 0 1px rgba(148, 163, 184, 0.08),
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 60px -10px rgba(59, 130, 246, 0.35),
+      0 0 100px -20px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Softer glow for content cards */
+  .shadow-card-glow {
+    box-shadow:
+      0 0 0 1px rgba(148, 163, 184, 0.06),
+      0 12px 30px -12px rgba(0, 0, 0, 0.45),
+      0 0 40px -18px rgba(59, 130, 246, 0.25);
+  }
+
   .text-gradient {
     background: var(--text-gradient);
     -webkit-background-clip: text;

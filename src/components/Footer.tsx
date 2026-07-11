@@ -1,112 +1,59 @@
-import { Heart, Github, Linkedin, Mail, Youtube } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { Github, Linkedin, Mail, Youtube } from 'lucide-react';
+import { NAV_ITEMS } from '@/lib/siteRoutes';
+
+const SOCIAL_LINKS = [
+  { href: 'mailto:jainsoham01@gmail.com', label: 'Email', icon: Mail },
+  { href: 'https://www.linkedin.com/in/soham-jain1/', label: 'LinkedIn', icon: Linkedin },
+  { href: 'https://github.com/sjain2025', label: 'GitHub', icon: Github },
+  { href: 'https://www.youtube.com/@CodingWithSohamJain', label: 'YouTube', icon: Youtube },
+];
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const quickLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Research', href: '#research' },
-    { name: 'Contact', href: '#contact' }
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="container mx-auto px-6 py-12">
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* About section with social links */}
-          <div className="md:col-span-2">
-            <h3 className="mb-4 text-2xl font-bold text-white">Soham Jain</h3>
-            <p className="text-muted-foreground mb-6 leading-relaxed max-w-md">
-              Computer Science at Carnegie Mellon University, software engineer, AI researcher, 
-              and innovator.
-            </p>
-            
-            {/* Social media buttons */}
-            <div className="flex space-x-3">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="group relative rounded-full hover:scale-110 transition-all duration-300 hover:bg-primary/10 w-12 h-12 backdrop-blur-sm border border-primary/20 hover:border-primary/40"
-                asChild
-              >
-                <a href="mailto:jainsoham01@gmail.com" aria-label="Email">
-                  <Mail className="h-5 w-5 transition-colors group-hover:text-primary" />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </a>
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="group relative rounded-full hover:scale-110 transition-all duration-300 hover:bg-primary/10 w-12 h-12 backdrop-blur-sm border border-primary/20 hover:border-primary/40"
-                asChild
-              >
-                <a href="https://www.linkedin.com/in/soham-jain1/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                  <Linkedin className="h-5 w-5 transition-colors group-hover:text-primary" />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </a>
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="group relative rounded-full hover:scale-110 transition-all duration-300 hover:bg-primary/10 w-12 h-12 backdrop-blur-sm border border-primary/20 hover:border-primary/40"
-                asChild
-              >
-                <a href="https://github.com/sjain2025" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                  <Github className="h-5 w-5 transition-colors group-hover:text-primary" />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </a>
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="group relative rounded-full hover:scale-110 transition-all duration-300 hover:bg-primary/10 w-12 h-12 backdrop-blur-sm border border-primary/20 hover:border-primary/40"
-                asChild
-              >
-                <a href="https://www.youtube.com/@CodingWithSohamJain" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                  <Youtube className="h-5 w-5 transition-colors group-hover:text-primary" />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </a>
-              </Button>
-            </div>
-          </div>
-
-          {/* Navigation shortcuts */}
+    <footer className="relative border-t border-slate-800/80 bg-background">
+      <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="flex flex-col items-center gap-6 text-center">
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-muted-foreground hover:text-primary transition-smooth text-left"
-                  >
-                    {link.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <p className="text-lg font-semibold text-white">Soham Jain</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Computer Science at Carnegie Mellon University
+            </p>
           </div>
 
-        </div>
+          <nav aria-label="Footer" className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            {NAV_ITEMS.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className="text-sm text-muted-foreground transition-colors duration-200 hover:text-primary"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
 
-        {/* Copyright and tech stack info */}
-        <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm mb-4 md:mb-0">
-            © {currentYear} Soham Jain. All rights reserved.
-          </p>
-          
-          <div className="flex items-center text-muted-foreground text-sm">
-            <span>Made using React, Vite, TypeScript, & Tailwind CSS</span>
+          <div className="flex gap-3">
+            {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                {...(href.startsWith('http')
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/30 text-slate-400 transition-all duration-200 hover:border-slate-600/50 hover:bg-slate-700/40 hover:text-slate-100"
+              >
+                <Icon className="h-[18px] w-[18px]" />
+              </a>
+            ))}
+          </div>
+
+          <div className="flex w-full flex-col items-center gap-1 border-t border-slate-800/80 pt-6 text-sm text-muted-foreground sm:flex-row sm:justify-between">
+            <p>© {currentYear} Soham Jain. All rights reserved.</p>
+            <p>Made using React, Vite, TypeScript, &amp; Tailwind CSS</p>
           </div>
         </div>
       </div>

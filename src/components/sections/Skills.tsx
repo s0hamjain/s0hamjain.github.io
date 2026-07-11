@@ -31,11 +31,13 @@ import {
   SiLinux,
 } from 'react-icons/si';
 import { cn } from '@/lib/utils';
+import SectionShell from '@/components/layout/SectionShell';
+import SectionHeader from '@/components/layout/SectionHeader';
 
 type SkillItem = { name: string; icon: ReactNode; colorClass: string; lucide?: boolean };
 
 const Skills = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   const skillCategories: { category: string; skills: SkillItem[] }[] = [
@@ -119,37 +121,19 @@ const Skills = () => {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="skills"
-      className="skills-section relative overflow-hidden bg-background py-20"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(148, 163, 184, 0.35) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148, 163, 184, 0.35) 1px, transparent 1px)
-          `,
-          backgroundSize: '28px 28px',
-        }}
-      />
-      <div className="container relative z-10 mx-auto px-6">
-        <div className="mx-auto max-w-6xl">
-          <h2
-            className={cn(
-              'mb-12 text-center text-4xl font-bold text-white md:mb-14 md:text-5xl',
-              visible && 'animate-fade-up',
-              !visible && 'opacity-0'
-            )}
-            style={visible ? { animationDelay: '0ms' } : undefined}
-          >
-            Technical Skills
-          </h2>
+    <SectionShell id="skills">
+      <div ref={sectionRef} className="skills-section">
+        <div
+          className={cn(visible && 'animate-fade-up', !visible && 'opacity-0')}
+          style={visible ? { animationDelay: '0ms' } : undefined}
+        >
+          <SectionHeader kicker="skills" title="Technical Skills" />
+        </div>
 
+        <div>
           <div
             className={cn(
-              'card-gradient rounded-2xl border border-border/80 p-8 shadow-medium md:p-10 lg:p-12',
+              'card-surface shadow-card-glow p-8 md:p-10 lg:p-12',
               visible && 'animate-fade-up',
               !visible && 'opacity-0'
             )}
@@ -224,7 +208,7 @@ const Skills = () => {
           </div>
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 };
 

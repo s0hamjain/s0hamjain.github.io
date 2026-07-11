@@ -2,6 +2,8 @@ import { FileText, Award, Users, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useState } from 'react';
+import SectionShell from '@/components/layout/SectionShell';
+import SectionHeader from '@/components/layout/SectionHeader';
 
 const Research = () => {
   type Publication = {
@@ -74,94 +76,77 @@ const Research = () => {
 
 
   return (
-    <section id="research" className="py-20 bg-background">
-      <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="mb-16 text-center text-4xl font-bold text-white md:text-5xl">
-            Research & Publications
-          </h2>
+    <SectionShell id="research">
+      <SectionHeader kicker="research" title="Research & Publications" />
 
+      <div className="space-y-8">
+        {publications.map((pub, index) => (
+          <article
+            key={index}
+            role="button"
+            tabIndex={0}
+            className="card-surface shadow-card-glow animate-fade-up cursor-pointer p-6 transition-all duration-300 hover:-translate-y-1 hover:border-slate-600/60 focus:outline-none focus:ring-2 focus:ring-primary/40 md:p-8"
+            style={{ animationDelay: `${index * 0.08}s` }}
+            onClick={() => setSelectedPublication(pub)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setSelectedPublication(pub);
+              }
+            }}
+          >
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="mb-4 flex flex-wrap items-center gap-3">
+                  <FileText className="h-6 w-6 text-primary" />
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                    {pub.type}
+                  </span>
+                  {pub.impact && (
+                    <span className="rounded-full border border-slate-700/60 bg-slate-800/50 px-3 py-1 text-sm font-medium text-slate-300">
+                      {pub.impact}
+                    </span>
+                  )}
+                  {pub.award && (
+                    <span className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-sm font-semibold text-amber-300">
+                      <Award className="h-4 w-4" />
+                      {pub.award}
+                    </span>
+                  )}
+                </div>
 
-          {/* Publications */}
-          <div className="space-y-8">
-            {publications.map((pub, index) => (
-              <div 
-                key={index}
-                role="button"
-                tabIndex={0}
-                className="card-gradient rounded-xl p-8 shadow-medium transition-all duration-300 animate-fade-up border border-primary/20 relative hover:shadow-hard hover:-translate-y-1 hover:border-primary/40 hover:bg-primary/15 focus:outline-none focus:ring-2 focus:ring-primary/40 focus-visible:ring-offset-2 cursor-pointer"
-                style={{ animationDelay: `${index * 0.2}s` }}
-                onClick={() => setSelectedPublication(pub)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    setSelectedPublication(pub);
-                  }
+                <h3 className="mb-2 text-xl font-bold leading-tight tracking-tight text-foreground md:text-2xl">
+                  {pub.title}
+                </h3>
+
+                <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span>{pub.authors}</span>
+                  </div>
+                </div>
+
+                <p className="mb-4 text-base font-medium text-primary/90">{pub.venue}</p>
+
+                <p className="leading-relaxed text-muted-foreground">
+                  {getTruncatedAbstract(pub.description)}
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                className="shrink-0 border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  window.open(pub.link, '_blank');
                 }}
               >
-                {/* Quick impact summary */}
-                {pub.impact && (
-                  <div className="absolute -top-3 left-6 bg-accent text-black px-3 py-1 rounded-full text-base font-medium shadow-lg">
-                    🎯 {pub.impact}
-                  </div>
-                )}
-
-                {/* Paper title and read button */}
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <FileText className="h-7 w-7 text-primary" />
-                      <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-base font-medium">
-                        {pub.type}
-                      </span>
-                      {pub.award && (
-                        <div className="flex items-center gap-2 text-lg">
-                          <Award className="h-6 w-6 text-accent" />
-                          <span className="text-accent font-semibold">
-                            Best Presentation Award
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <h3 className="text-2xl font-bold text-foreground mb-2 leading-tight">{pub.title}</h3>
-                    
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        <span>{pub.authors}</span>
-                      </div>
-                    </div>
-
-                    <p className="text-primary font-medium mb-3 text-lg">{pub.venue}</p>
-                  </div>
-
-                  {/* Link to the actual paper */}
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="transition-transform duration-200 px-6 py-3 text-base flex-shrink-0 ml-4 hover:text-white hover:border-white hover:bg-transparent"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      window.open(pub.link, '_blank');
-                    }}
-                  >
-                    <ExternalLink className="h-5 w-5 mr-2" />
-                    Read Paper
-                  </Button>
-                </div>
-
-                {/* Paper summary - expands on hover */}
-                <div className="mb-4">
-                  <p className="text-muted-foreground leading-relaxed">
-                    {getTruncatedAbstract(pub.description)}
-                  </p>
-                </div>
-
-              </div>
-            ))}
-          </div>
-        </div>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Read Paper
+              </Button>
+            </div>
+          </article>
+        ))}
       </div>
 
       <Dialog open={!!selectedPublication} onOpenChange={(open) => !open && setSelectedPublication(null)}>
@@ -178,7 +163,7 @@ const Research = () => {
                     {selectedPublication.type}
                   </p>
                   {selectedPublication.award && (
-                    <p className="text-accent font-semibold flex items-center gap-2">
+                    <p className="flex items-center gap-2 font-semibold text-amber-300">
                       <Award className="h-4 w-4" />
                       {selectedPublication.award}
                     </p>
@@ -212,7 +197,7 @@ const Research = () => {
           </DialogContent>
         )}
       </Dialog>
-    </section>
+    </SectionShell>
   );
 };
 

@@ -1,5 +1,7 @@
 import { Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import SectionShell from '@/components/layout/SectionShell';
+import SectionHeader from '@/components/layout/SectionHeader';
 import resumePdf from '@/assets/resume.pdf';
 
 const Resume = () => {
@@ -13,35 +15,11 @@ const Resume = () => {
   };
 
   return (
-    <section id="about" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background to match Hero */}
-      <div className="absolute inset-0 z-0 bg-[#0b0c0f]" />
-      <div
-        className="absolute inset-0 z-0 opacity-[0.035]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148, 163, 184, 0.15) 1px, transparent 1px)
-          `,
-          backgroundSize: '28px 28px',
-        }}
-      />
+    <SectionShell id="about" containerClassName="max-w-7xl">
+      <SectionHeader kicker="resume" title="Resume" />
 
-      <div className="relative z-10 flex w-full max-w-7xl flex-col items-center px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="mb-10 w-full text-center lg:mb-12">
-          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl">
-            Resume
-          </h2>
-        </div>
-
-        <div className="mx-auto w-[min(100%,57rem)]">
-          <div
-            className="rounded-2xl overflow-hidden border border-slate-600/50 bg-[#1e1e24]"
-            style={{
-              boxShadow:
-                '0 0 0 1px rgba(148, 163, 184, 0.08), 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 60px -10px rgba(59, 130, 246, 0.35), 0 0 100px -20px rgba(59, 130, 246, 0.2)',
-            }}
-          >
+      <div className="mx-auto w-[min(100%,57rem)]">
+        <div className="card-surface shadow-terminal overflow-hidden">
             <div className="relative flex min-h-12 items-center border-b border-slate-700/60 bg-[#2d2d2d] px-4 py-3 sm:px-5">
               <div className="relative z-10 flex gap-1.5">
                 <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
@@ -74,11 +52,10 @@ const Resume = () => {
                 title="Soham Jain Resume"
                 loading="lazy"
               />
-            </div>
           </div>
         </div>
       </div>
-    </section>
+    </SectionShell>
   );
 };
 
