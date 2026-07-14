@@ -121,12 +121,7 @@ const Skills = () => {
   return (
     <SectionShell id="skills">
       <div ref={sectionRef} className="skills-section">
-        <div
-          className={cn(visible && 'animate-fade-up', !visible && 'opacity-0')}
-          style={visible ? { animationDelay: '0ms' } : undefined}
-        >
-          <SectionHeader title="Technical Skills" />
-        </div>
+        <SectionHeader title="Technical Skills" />
 
         <div>
           <div

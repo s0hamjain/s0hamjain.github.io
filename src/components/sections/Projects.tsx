@@ -1,4 +1,4 @@
-import { ExternalLink, Github, Brain } from 'lucide-react';
+import { ExternalLink, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SectionShell from '@/components/layout/SectionShell';
 import SectionHeader from '@/components/layout/SectionHeader';
@@ -19,7 +19,7 @@ interface Project {
   period: string;
   technologies: string[];
   links: ProjectLinks | null;
-  image: string | null;
+  image: string;
   imageAlt: string;
 }
 
@@ -79,61 +79,37 @@ const projects: Project[] = [
     },
     image: eyelsImage,
     imageAlt: "EyeLS demo video title slide with gaze-tracking keyboard"
-  },
-  {
-    title: "NeurOS",
-    description: "Smartphone AI application that quantifies brain health using gaze-tracking algorithms during my time at Vytal.AI.",
-    period: "May 2022 - Present",
-    technologies: ["React Native", "Python", "AI/ML", "Mobile Development", "Computer Vision"],
-    links: null,
-    image: null,
-    imageAlt: "NeurOS"
   }
 ];
 
 const ProjectVisual = ({ project }: { project: Project }) => {
-  if (project.image) {
-    const visual = (
-      <div className="relative h-full min-h-[220px] overflow-hidden sm:min-h-[280px]">
-        <img
-          src={project.image}
-          alt={project.imageAlt}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
-      </div>
-    );
-
-    if (project.links?.demo) {
-      return (
-        <a
-          href={project.links.demo}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Open ${project.title}`}
-          className="block h-full"
-        >
-          {visual}
-        </a>
-      );
-    }
-    return visual;
-  }
-
-  // Fallback panel for projects without a live site to capture.
-  return (
-    <div className="bg-grid relative flex h-full min-h-[220px] items-center justify-center overflow-hidden bg-slate-900/60 sm:min-h-[280px]">
-      <div className="absolute inset-0 bg-gradient-to-br from-sky-500/15 via-transparent to-violet-500/20" />
-      <div className="relative flex flex-col items-center gap-4">
-        <span className="absolute -inset-8 animate-ping rounded-full border border-sky-400/20 [animation-duration:2.5s]" />
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/10 text-sky-300">
-          <Brain className="h-10 w-10" />
-        </div>
-        <p className="font-mono text-sm text-slate-400">gaze_tracking.model — loaded</p>
-      </div>
+  const visual = (
+    <div className="relative h-full min-h-[220px] overflow-hidden sm:min-h-[280px]">
+      <img
+        src={project.image}
+        alt={project.imageAlt}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
     </div>
   );
+
+  if (project.links?.demo) {
+    return (
+      <a
+        href={project.links.demo}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Open ${project.title}`}
+        className="block h-full"
+      >
+        {visual}
+      </a>
+    );
+  }
+
+  return visual;
 };
 
 const Projects = () => {

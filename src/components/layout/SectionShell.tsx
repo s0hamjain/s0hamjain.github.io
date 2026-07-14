@@ -17,7 +17,7 @@ type SectionShellProps = {
 const SectionShell = ({ id, children, className, containerClassName }: SectionShellProps) => (
   <section
     id={id}
-    className={cn('relative min-h-screen overflow-hidden bg-background pt-28 pb-20 md:pt-32', className)}
+    className={cn('relative min-h-screen overflow-hidden bg-background pt-24 pb-20 md:pt-28', className)}
   >
     <div className="bg-grid pointer-events-none absolute inset-0 z-0" aria-hidden />
     <div className={cn('container relative z-10 mx-auto max-w-6xl px-4 sm:px-6', containerClassName)}>
