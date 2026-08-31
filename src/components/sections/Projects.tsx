@@ -115,26 +115,32 @@ const ProjectVisual = ({ project }: { project: Project }) => {
 const Projects = () => {
   return (
     <SectionShell id="projects" containerClassName="max-w-6xl">
-      <SectionHeader title="Featured Projects" />
+      <SectionHeader command="cat projects" title="Featured Projects">
+        <div className="flex flex-col gap-10">
+          {projects.map((project, index) => (
+            <article
+              key={project.title}
+              className="card-surface shadow-card-glow group overflow-hidden transition-colors duration-300 hover:border-slate-600/60"
+            >
+            <div className="flex items-center gap-2 border-b border-slate-700/40 bg-slate-900/50 px-5 py-2.5 font-mono text-xs text-slate-500">
+              <span className="text-emerald-400/70">{'>'}</span>
+              <span>{project.title.toLowerCase().replace(/\s+/g, '-')}</span>
+              <span className="ml-auto text-slate-600">{project.period}</span>
+            </div>
 
-      <div className="flex flex-col gap-10">
-        {projects.map((project, index) => (
-          <article
-            key={project.title}
-            className="card-surface shadow-card-glow animate-fade-up group overflow-hidden transition-colors duration-300 hover:border-slate-600/60"
-            style={{ animationDelay: `${index * 0.08}s` }}
-          >
             <div className={`grid lg:grid-cols-2 ${index % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
-              <div className={`border-b border-border/60 lg:border-b-0 [direction:ltr] ${index % 2 === 1 ? 'lg:border-l' : 'lg:border-r'}`}>
+              <div className={`border-b border-border/40 lg:border-b-0 [direction:ltr] ${index % 2 === 1 ? 'lg:border-l' : 'lg:border-r'} border-border/40`}>
                 <ProjectVisual project={project} />
               </div>
 
-              <div className="flex flex-col p-6 [direction:ltr] md:p-10">
+              <div className="flex flex-col p-6 [direction:ltr] md:p-8">
                 <header className="mb-4">
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  <p className="mb-1.5 font-mono text-sm text-slate-400">
+                    {`// ${project.period}`}
+                  </p>
+                  <h3 className="font-mono text-xl font-bold tracking-tight text-white md:text-2xl">
                     {project.title}
                   </h3>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{project.period}</p>
                 </header>
 
                 <p className="mb-6 text-base leading-relaxed text-foreground/75">
@@ -142,7 +148,8 @@ const Projects = () => {
                 </p>
 
                 <div className="mt-auto">
-                  <div className="border-t border-border/60 pt-5">
+                  <div className="border-t border-border/40 pt-5">
+                    <p className="mb-2.5 font-mono text-sm text-slate-400">{'// Tech Stack'}</p>
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.map((tech) => (
                         <TechBadge key={`${project.title}-${tech}`} name={tech} />
@@ -151,24 +158,24 @@ const Projects = () => {
                   </div>
 
                   {project.links && (
-                    <div className="mt-6 flex flex-wrap gap-3">
+                    <div className="mt-5 flex flex-wrap gap-3">
                       <Button
-                        className="flex-1 border-0 bg-primary font-medium text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/90 hover:shadow-lg sm:flex-none"
+                        className="flex-1 border border-emerald-500/30 bg-emerald-500/10 font-mono text-xs font-medium text-emerald-400 transition-all duration-200 hover:border-emerald-500/50 hover:bg-emerald-500/20 sm:flex-none"
                         asChild
                       >
                         <a href={project.links.demo} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-2 h-4 w-4" />
+                          <ExternalLink className="mr-2 h-3.5 w-3.5" />
                           {project.links.demoLabel}
                         </a>
                       </Button>
                       <Button
                         variant="outline"
-                        className="flex-1 border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100 sm:flex-none"
+                        className="flex-1 border-slate-700/60 bg-transparent font-mono text-xs text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100 sm:flex-none"
                         asChild
                       >
                         <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="mr-2 h-4 w-4" />
-                          Source Code
+                          <Github className="mr-2 h-3.5 w-3.5" />
+                          source
                         </a>
                       </Button>
                     </div>
@@ -177,25 +184,23 @@ const Projects = () => {
               </div>
             </div>
           </article>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="mt-16 text-center">
-        <p className="mb-6 text-muted-foreground">
-          Want to see more of my work? Check out my GitHub!
-        </p>
-        <Button
-          size="lg"
-          variant="outline"
-          className="border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100"
-          asChild
-        >
-          <a href="https://github.com/s0hamjain" target="_blank" rel="noopener noreferrer">
-            <Github className="mr-2 h-5 w-5" />
-            View All Projects
+        <div className="mt-14 flex items-center justify-center gap-3 font-mono text-sm text-slate-500">
+          <span className="text-emerald-400/60">$</span>
+          <span>more projects on</span>
+          <a
+            href="https://github.com/s0hamjain"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-slate-300 underline decoration-slate-600 underline-offset-4 transition-colors duration-200 hover:text-emerald-400 hover:decoration-emerald-400/40"
+          >
+            <Github className="h-4 w-4" />
+            github
           </a>
-        </Button>
-      </div>
+        </div>
+      </SectionHeader>
     </SectionShell>
   );
 };

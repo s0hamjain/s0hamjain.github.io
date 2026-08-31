@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Github, Linkedin, Mail, Youtube } from 'lucide-react';
 import profileImage from '@/assets/8898.jpg';
@@ -9,23 +9,13 @@ const NAME_TYPEWRITER = 'Soham Jain';
 const INTRO_COMMAND = 'cat sections.txt';
 
 const NAME_TYPING_MS = 60;
-const TERMINAL_TYPING_MS = 50;
+const TERMINAL_TYPING_MS = 35;
 
 const SOCIAL_LINKS = [
-  { href: 'mailto:jainsoham01@gmail.com', label: 'Email', icon: Mail, colorClass: 'text-rose-400' },
-  {
-    href: 'https://linkedin.com/in/sohamja1n',
-    label: 'LinkedIn',
-    icon: Linkedin,
-    colorClass: 'text-blue-400',
-  },
-  { href: 'https://github.com/s0hamjain', label: 'GitHub', icon: Github, colorClass: 'text-slate-300' },
-  {
-    href: 'https://www.youtube.com/@CodingWithSohamJain',
-    label: 'YouTube',
-    icon: Youtube,
-    colorClass: 'text-red-500',
-  },
+  { href: 'mailto:jainsoham01@gmail.com', label: 'Email', icon: Mail, color: 'text-emerald-400/80' },
+  { href: 'https://linkedin.com/in/sohamja1n', label: 'LinkedIn', icon: Linkedin, color: 'text-[#5b9bd5]' },
+  { href: 'https://github.com/s0hamjain', label: 'GitHub', icon: Github, color: 'text-slate-300' },
+  { href: 'https://www.youtube.com/@CodingWithSohamJain', label: 'YouTube', icon: Youtube, color: 'text-[#e06060]' },
 ];
 
 const ROLES = ['Student', 'Software Engineer', 'AI Developer'];
@@ -36,29 +26,7 @@ const Hero = () => {
   const [terminalChars, setTerminalChars] = useState(0);
   const [showSections, setShowSections] = useState(false);
   const [cursorVisible, setCursorVisible] = useState(true);
-  const nameMeasureRef = useRef<HTMLSpanElement>(null);
-  const [nameGradientWidthPx, setNameGradientWidthPx] = useState<number>();
 
-  const updateNameGradientWidth = useCallback(() => {
-    const el = nameMeasureRef.current;
-    if (el) setNameGradientWidthPx(el.offsetWidth);
-  }, []);
-
-  // Lock gradient to the final name width so it never rescales mid-animation.
-  useLayoutEffect(() => {
-    updateNameGradientWidth();
-    void document.fonts?.ready?.then(updateNameGradientWidth);
-  }, [updateNameGradientWidth]);
-
-  useEffect(() => {
-    const el = nameMeasureRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(() => updateNameGradientWidth());
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [updateNameGradientWidth]);
-
-  // Name typing: match terminal typing cadence.
   useEffect(() => {
     if (nameChars < NAME_TYPEWRITER.length) {
       const t = setTimeout(() => setNameChars((c) => c + 1), NAME_TYPING_MS);
@@ -92,54 +60,31 @@ const Hero = () => {
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background"
     >
       <div className="bg-grid pointer-events-none absolute inset-0 z-0" aria-hidden />
+      <div className="bg-noise pointer-events-none absolute inset-0 z-0" aria-hidden />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
-        {/* "Hi, I'm" + name. The invisible sizer reserves the final width so the
-            centered line never shifts while characters are typed (no stutter). */}
         <div className="mb-8 text-center lg:mb-10">
           <h1
-            className="text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+            className="text-4xl tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
             aria-label={`Hi, I'm ${NAME_TYPEWRITER}`}
           >
-            <span className="relative inline-block whitespace-nowrap" aria-hidden>
-              <span className="invisible">
-                <span>Hi, I'm </span>
-                <span ref={nameMeasureRef}>{NAME_TYPEWRITER}</span>
-                <span className="ml-0.5 inline-block w-1" />
-              </span>
-              <span className="absolute left-0 top-0 whitespace-nowrap">
-                <span className="text-slate-300">Hi, I'm </span>
-                <span
-                  className="inline-block bg-gradient-to-r from-sky-400 via-violet-400 to-blue-500 bg-clip-text bg-no-repeat text-transparent [background-clip:text] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]"
-                  style={
-                    nameGradientWidthPx != null
-                      ? {
-                          backgroundSize: `${nameGradientWidthPx}px 100%`,
-                          backgroundPosition: 'left center',
-                        }
-                      : undefined
-                  }
-                >
-                  {NAME_TYPEWRITER.slice(0, nameChars)}
-                </span>
-                <span
-                  className={`ml-0.5 inline-block h-[0.9em] w-1 bg-blue-500 align-middle ${heroCursorOn ? 'opacity-100' : 'opacity-0'}`}
-                  style={{ transition: 'opacity 0.15s ease-out', transform: 'translateY(-2px)' }}
-                />
-              </span>
+            <span className="font-sans text-white/60">Hi, I'm </span>
+            <span className="font-sans font-bold text-emerald-400" aria-hidden>
+              {NAME_TYPEWRITER.slice(0, nameChars)}
+            </span>
+            <span
+              className={`inline-block h-[0.82em] w-[3px] bg-emerald-400 align-middle ${heroCursorOn ? 'opacity-100' : 'opacity-0'}`}
+              style={{ transition: 'opacity 0.15s ease-out', transform: 'translateY(-3px)' }}
+            />
+            <span className="font-sans font-bold text-transparent" aria-hidden>
+              {NAME_TYPEWRITER.slice(nameChars)}
             </span>
           </h1>
-          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-base sm:text-lg">
+          <p className="mt-5 font-mono text-[13px] tracking-wide text-slate-400 sm:text-sm">
             {ROLES.map((role, i) => (
-              <span key={role} className="contents">
-                {i > 0 && (
-                  <span className="text-slate-500" aria-hidden>
-                    ·
-                  </span>
-                )}
-                <span className="rounded-md bg-slate-800/60 px-3 py-1.5 font-medium text-slate-300 ring-1 ring-slate-700/50">
-                  {role}
-                </span>
+              <span key={role}>
+                {i > 0 && <span className="mx-2 text-slate-600">/</span>}
+                <span>{role.toLowerCase()}</span>
               </span>
             ))}
           </p>
@@ -181,10 +126,11 @@ const Hero = () => {
                       key={to}
                       type="button"
                       onClick={() => navigate(to)}
-                      className="animate-terminal-item-in flex min-h-0 w-full flex-1 items-center rounded-xl border border-transparent bg-transparent px-3 py-2 text-left font-mono text-sm text-slate-300 transition-all duration-200 hover:border-slate-600/50 hover:bg-slate-700/40 hover:text-emerald-400 sm:text-base"
+                      className="animate-terminal-item-in flex min-h-0 w-full flex-1 items-center gap-2 rounded-md px-3 py-2 text-left font-mono text-sm text-slate-400 transition-all duration-150 hover:bg-slate-800/60 hover:text-emerald-400 sm:text-base"
                       style={{ animationDelay: `${index * 80}ms` }}
                     >
-                      {description}
+                      <span className="text-slate-600">{'>'}</span>
+                      {description.toLowerCase()}
                     </button>
                   ))}
                 </div>
@@ -205,8 +151,8 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-4">
-          {SOCIAL_LINKS.map(({ href, label, icon: Icon, colorClass }) => (
+        <div className="mt-10 flex justify-center gap-4">
+          {SOCIAL_LINKS.map(({ href, label, icon: Icon, color }) => (
             <a
               key={label}
               href={href}
@@ -214,7 +160,7 @@ const Hero = () => {
               {...(href.startsWith('http')
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
-              className={`flex h-12 w-12 items-center justify-center rounded-xl border border-slate-700/50 bg-slate-800/30 transition-all duration-200 hover:border-slate-600/50 hover:bg-slate-700/40 ${colorClass}`}
+              className={`flex h-12 w-12 items-center justify-center rounded-lg border border-slate-700/50 bg-slate-800/30 ${color} transition-all duration-200 hover:border-slate-600 hover:bg-slate-800/60`}
             >
               <Icon className="h-6 w-6" />
             </a>

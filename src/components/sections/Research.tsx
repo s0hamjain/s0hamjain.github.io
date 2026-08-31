@@ -1,4 +1,4 @@
-import { FileText, Award, Users, ExternalLink } from 'lucide-react';
+import { Award, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useState } from 'react';
@@ -77,16 +77,14 @@ const Research = () => {
 
   return (
     <SectionShell id="research">
-      <SectionHeader title="Research & Publications" />
-
-      <div className="space-y-8">
-        {publications.map((pub, index) => (
-          <article
-            key={index}
-            role="button"
-            tabIndex={0}
-            className="card-surface shadow-card-glow animate-fade-up cursor-pointer p-6 transition-all duration-300 hover:-translate-y-1 hover:border-slate-600/60 focus:outline-none focus:ring-2 focus:ring-primary/40 md:p-8"
-            style={{ animationDelay: `${index * 0.08}s` }}
+      <SectionHeader command="cat research" title="Research & Publications">
+        <div className="space-y-8">
+          {publications.map((pub, index) => (
+            <article
+              key={index}
+              role="button"
+              tabIndex={0}
+              className="card-surface shadow-card-glow cursor-pointer overflow-hidden transition-all duration-300 hover:border-slate-600/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
             onClick={() => setSelectedPublication(pub)}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
@@ -95,108 +93,106 @@ const Research = () => {
               }
             }}
           >
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0 flex-1">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <FileText className="h-6 w-6 text-primary" />
-                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                    {pub.type}
-                  </span>
-                  {pub.impact && (
-                    <span className="rounded-full border border-slate-700/60 bg-slate-800/50 px-3 py-1 text-sm font-medium text-slate-300">
-                      {pub.impact}
-                    </span>
-                  )}
-                  {pub.award && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-sm font-semibold text-amber-300">
-                      <Award className="h-4 w-4" />
-                      {pub.award}
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="mb-2 text-xl font-bold leading-tight tracking-tight text-foreground md:text-2xl">
-                  {pub.title}
-                </h3>
-
-                <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span>{pub.authors}</span>
-                  </div>
-                </div>
-
-                <p className="mb-4 text-base font-medium text-primary/90">{pub.venue}</p>
-
-                <p className="leading-relaxed text-muted-foreground">
-                  {getTruncatedAbstract(pub.description)}
-                </p>
-              </div>
-
-              <Button
-                variant="outline"
-                className="shrink-0 border-slate-700/60 bg-transparent text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  window.open(pub.link, '_blank');
-                }}
-              >
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Read Paper
-              </Button>
+            <div className="flex items-center gap-2 border-b border-slate-700/40 bg-slate-900/50 px-5 py-2.5 font-mono text-xs text-slate-500">
+              <span className="text-emerald-400/70">{'>'}</span>
+              <span>paper-{String(index + 1).padStart(2, '0')}</span>
             </div>
-          </article>
-        ))}
-      </div>
 
-      <Dialog open={!!selectedPublication} onOpenChange={(open) => !open && setSelectedPublication(null)}>
-        {selectedPublication && (
-          <DialogContent className="max-w-5xl sm:max-w-6xl p-8 sm:p-10 max-h-[85vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">{selectedPublication.title}</DialogTitle>
-              <DialogDescription className="space-y-4">
-                <div className="text-sm text-muted-foreground space-y-1">
-                  <p className="font-medium text-foreground">{selectedPublication.authors}</p>
-                  <p className="text-primary text-base font-semibold">{selectedPublication.venue}</p>
-                  <p className="text-foreground">
-                    <span className="font-medium">Role: </span>
-                    {selectedPublication.type}
-                  </p>
-                  {selectedPublication.award && (
-                    <p className="flex items-center gap-2 font-semibold text-amber-300">
-                      <Award className="h-4 w-4" />
-                      {selectedPublication.award}
-                    </p>
-                  )}
-                </div>
-                <p className="text-base leading-relaxed text-foreground">
-                  {selectedPublication.description}
-                </p>
-                {!!selectedPublication.keywords.length && (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPublication.keywords.map((keyword) => (
-                      <span key={keyword} className="px-3 py-1 text-xs font-semibold uppercase tracking-wide bg-primary/10 text-primary rounded-full">
-                        {keyword}
+            <div className="p-6 md:p-8">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0 flex-1">
+                  {pub.award && (
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <span className="flex items-center gap-1.5 rounded-md border border-amber-400/20 bg-amber-400/5 px-2 py-0.5 font-mono text-xs text-amber-300">
+                        <Award className="h-3 w-3" />
+                        {pub.award}
                       </span>
-                    ))}
+                    </div>
+                  )}
+
+                  <h3 className="mb-2 font-mono text-lg font-bold leading-tight tracking-tight text-white md:text-xl">
+                    {pub.title}
+                  </h3>
+
+                  <div className="mb-2 font-mono text-xs text-slate-500">
+                    {`// ${pub.authors}`}
                   </div>
-                )}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="mt-6 flex justify-end">
-              <Button
-                size="lg"
-                variant="outline"
-                className="transition-transform duration-200 px-6 py-3 text-base hover:text-white hover:border-white hover:bg-transparent gap-2"
-                onClick={() => window.open(selectedPublication.link, '_blank')}
-              >
-                <ExternalLink className="h-5 w-5" />
-                Read Paper
-              </Button>
+
+                  <p className="mb-4 font-mono text-sm text-emerald-400/70">{pub.venue}</p>
+
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {getTruncatedAbstract(pub.description)}
+                  </p>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="shrink-0 border-slate-700/60 bg-transparent font-mono text-xs text-slate-300 transition-all duration-200 hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:text-emerald-400"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    window.open(pub.link, '_blank');
+                  }}
+                >
+                  <ExternalLink className="mr-2 h-3.5 w-3.5" />
+                  Read Paper
+                </Button>
+              </div>
+            </div>
+            </article>
+          ))}
+        </div>
+
+        <Dialog open={!!selectedPublication} onOpenChange={(open) => !open && setSelectedPublication(null)}>
+        {selectedPublication && (
+          <DialogContent className="max-w-5xl sm:max-w-6xl max-h-[85vh] overflow-y-auto border-slate-700/60 bg-[#12141a] p-0">
+            <div className="flex items-center gap-2 border-b border-slate-700/40 bg-slate-900/50 px-5 py-2.5 font-mono text-xs text-slate-500">
+              <span className="text-emerald-400/70">{'>'}</span>
+              <span>paper-details</span>
+            </div>
+            <div className="p-8 sm:p-10">
+              <DialogHeader>
+                <DialogTitle className="font-mono text-xl font-bold text-white">{selectedPublication.title}</DialogTitle>
+                <DialogDescription className="space-y-4 pt-4">
+                  <div className="space-y-1 font-mono text-sm">
+                    <p className="text-slate-300">{`// ${selectedPublication.authors}`}</p>
+                    <p className="text-emerald-400/80">{selectedPublication.venue}</p>
+                    {selectedPublication.award && (
+                      <p className="flex items-center gap-2 text-amber-300">
+                        <Award className="h-3.5 w-3.5" />
+                        {selectedPublication.award}
+                      </p>
+                    )}
+                  </div>
+                  <p className="text-base leading-relaxed text-slate-300">
+                    {selectedPublication.description}
+                  </p>
+                  {!!selectedPublication.keywords.length && (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedPublication.keywords.map((keyword) => (
+                        <span key={keyword} className="rounded-md border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-0.5 font-mono text-xs text-emerald-400/80">
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mt-6 flex justify-end">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-slate-700/60 bg-transparent font-mono text-sm text-slate-300 transition-all duration-200 hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:text-emerald-400"
+                  onClick={() => window.open(selectedPublication.link, '_blank')}
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Read Paper
+                </Button>
+              </div>
             </div>
           </DialogContent>
         )}
-      </Dialog>
+        </Dialog>
+      </SectionHeader>
     </SectionShell>
   );
 };

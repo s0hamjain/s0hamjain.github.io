@@ -31,14 +31,14 @@ const SiteLayout = () => {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      'rounded-full px-5 py-2 text-[15px] font-medium whitespace-nowrap transition-colors duration-200',
+      'rounded-md px-5 py-2 font-mono text-sm font-medium whitespace-nowrap tracking-wide transition-colors duration-200',
       isActive
         ? scrolled
-          ? 'bg-primary/15 text-primary'
-          : 'text-primary'
+          ? 'bg-emerald-500/10 text-emerald-400'
+          : 'text-emerald-400'
         : scrolled
-          ? 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-100'
-          : 'text-slate-400 hover:text-slate-100'
+          ? 'text-slate-400 hover:bg-slate-800/60 hover:text-emerald-400'
+          : 'text-slate-400 hover:text-emerald-400'
     );
 
   return (
@@ -59,9 +59,9 @@ const SiteLayout = () => {
           <nav
             aria-label="Primary"
             className={cn(
-              'mx-auto hidden w-max min-w-[36rem] items-center justify-center transition-all duration-300 md:flex lg:min-w-[42rem]',
+              'mx-auto hidden w-max min-w-[38rem] items-center justify-center transition-all duration-300 md:flex lg:min-w-[46rem]',
               scrolled
-                ? 'gap-1.5 rounded-full border border-slate-700/60 bg-[#131318]/85 px-2 py-2 shadow-lg shadow-black/30 backdrop-blur-md'
+                ? 'gap-1 rounded-full border border-slate-700/60 bg-[#131318]/85 px-3 py-2.5 shadow-lg shadow-black/30 backdrop-blur-md'
                 : 'gap-1 bg-transparent p-0'
             )}
           >
@@ -78,7 +78,7 @@ const SiteLayout = () => {
             <Link
               to={paths.home}
               className={cn(
-                'px-5 py-2 text-[15px] font-semibold text-slate-100 transition-all duration-300',
+                'px-5 py-2.5 font-mono text-base font-medium text-slate-100 transition-all duration-300',
                 scrolled
                   ? 'rounded-full border border-slate-700/60 bg-[#131318]/85 shadow-lg shadow-black/30 backdrop-blur-md'
                   : 'rounded-full bg-transparent'
@@ -116,10 +116,10 @@ const SiteLayout = () => {
                     end={to === paths.home}
                     className={({ isActive }) =>
                       cn(
-                        'rounded-xl px-4 py-2.5 text-[15px] font-medium transition-colors duration-200',
+                        'rounded-xl px-4 py-2.5 font-mono text-[14px] font-medium transition-colors duration-200',
                         isActive
-                          ? 'bg-primary/15 text-primary'
-                          : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-100'
+                          ? 'bg-emerald-500/10 text-emerald-400'
+                          : 'text-slate-300 hover:bg-slate-800/60 hover:text-emerald-400'
                       )
                     }
                   >

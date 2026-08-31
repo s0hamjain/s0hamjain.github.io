@@ -65,46 +65,44 @@ const Experience = () => {
 
   return (
     <SectionShell id="experience">
-      <SectionHeader title="Work Experience" />
+      <SectionHeader command="cat experience" title="Work Experience">
+        <div className="flex w-full flex-col gap-10 md:gap-12">
+          {experiences.map((exp) => (
+            <article
+              key={exp.company}
+              className="card-surface shadow-card-glow overflow-hidden"
+            >
+            <div className="flex items-center gap-2 border-b border-slate-700/40 bg-slate-900/50 px-5 py-2.5 font-mono text-xs text-slate-500">
+              <span className="text-emerald-400/70">{'>'}</span>
+              <span>{exp.company.toLowerCase().replace(/\s+/g, '-')}</span>
+              <span className="ml-auto text-slate-600">{exp.period}</span>
+            </div>
 
-      <div className="flex w-full flex-col gap-10 md:gap-12">
-        {experiences.map((exp, index) => (
-          <article
-            key={exp.company}
-            className="card-surface shadow-card-glow animate-fade-up p-6 md:p-8"
-            style={{ animationDelay: `${index * 0.06}s` }}
-          >
-            <header className="border-b border-border/60 pb-5 md:pb-6">
-              <h3 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">{exp.company}</h3>
-              <p className="mt-2 text-base font-semibold text-primary/90 md:text-lg">{exp.position}</p>
-              <p className="mt-2.5 text-sm text-muted-foreground md:text-[15px]">
-                <span className="tabular-nums">{exp.period}</span>
-                {exp.location ? (
-                  <>
-                    <span className="mx-2 text-muted-foreground/50">·</span>
-                    <span>{exp.location}</span>
-                  </>
-                ) : null}
-              </p>
-            </header>
+            <div className="p-6 md:p-8">
+              <header className="mb-5 md:mb-6">
+                <h3 className="font-mono text-xl font-bold tracking-tight text-white md:text-2xl">{exp.company}</h3>
+                <p className="mt-1 font-mono text-sm text-emerald-400/80">{exp.position}</p>
+                <p className="mt-2 font-mono text-sm text-slate-400">
+                  {`// ${exp.period}${exp.location ? ` · ${exp.location}` : ''}`}
+                </p>
+              </header>
 
-            <div className="pt-5 md:pt-6">
               {exp.description ? (
                 <p className="mb-5 text-base leading-relaxed text-foreground/80 md:mb-6">{exp.description}</p>
               ) : null}
 
-              <ul className="list-none space-y-3.5 md:space-y-4">
+              <ul className="list-none space-y-3 md:space-y-3.5">
                 {exp.achievements.map((achievement, i) => (
-                  <li key={i} className="flex gap-3 text-base leading-relaxed text-foreground/75 md:text-[17px] md:leading-relaxed">
-                    <span className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-primary/70" aria-hidden />
+                  <li key={i} className="flex gap-3 text-[15px] leading-relaxed text-foreground/75 md:text-base md:leading-relaxed">
+                    <span className="mt-2 font-mono text-emerald-400/40" aria-hidden>-</span>
                     <span>{achievement}</span>
                   </li>
                 ))}
               </ul>
 
               {exp.technologies.length > 0 ? (
-                <div className="mt-7 border-t border-border/60 pt-6 md:mt-8 md:pt-7">
-                  <p className="mb-3 text-sm font-semibold text-foreground md:mb-3.5">Technologies</p>
+                <div className="mt-6 border-t border-border/40 pt-5 md:mt-7 md:pt-6">
+                  <p className="mb-3 font-mono text-sm text-slate-400">{'// Tech Stack'}</p>
                   <div className="flex flex-wrap gap-2 md:gap-2.5">
                     {exp.technologies.map((tech) => (
                       <TechBadge key={`${exp.company}-${tech}`} name={tech} />
@@ -113,9 +111,10 @@ const Experience = () => {
                 </div>
               ) : null}
             </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      </SectionHeader>
     </SectionShell>
   );
 };

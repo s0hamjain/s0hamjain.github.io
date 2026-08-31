@@ -1,4 +1,3 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Code2 } from 'lucide-react';
 import {
@@ -35,6 +34,7 @@ import {
 import { cn } from '@/lib/utils';
 import SectionShell from '@/components/layout/SectionShell';
 import SectionHeader from '@/components/layout/SectionHeader';
+import { TerminalWindow } from '@/components/layout/TerminalChrome';
 
 type SkillItem = { name: string; icon: ReactNode; colorClass: string; lucide?: boolean };
 
@@ -75,7 +75,7 @@ const skillCategories: { category: string; skills: SkillItem[] }[] = [
       { name: 'Jira', icon: <SiJira />, colorClass: 'text-[#0052CC]' },
       { name: 'GitHub Copilot', icon: <SiGithubcopilot />, colorClass: 'text-zinc-100' },
       { name: 'AWS Kiro', icon: <SiAmazon />, colorClass: 'text-[#FF9900]' },
-      { name: 'Cursor', icon: <Code2 />, colorClass: 'text-sky-400', lucide: true },
+      { name: 'Cursor', icon: <Code2 />, colorClass: 'text-emerald-400', lucide: true },
       { name: 'Claude', icon: <SiAnthropic />, colorClass: 'text-[#D4A574]' },
       { name: 'GPT-4o', icon: <SiOpenai />, colorClass: 'text-zinc-100' },
       { name: 'Gemini', icon: <SiGooglegemini />, colorClass: 'text-[#8E75B2]' },
@@ -110,57 +110,18 @@ const SkillChip = ({ skill }: { skill: SkillItem }) => (
   </span>
 );
 
-const Skills = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useLayoutEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setVisible(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
-    );
-
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <SectionShell id="skills">
-      <div ref={sectionRef} className="skills-section">
-        <SectionHeader title="Technical Skills" />
-
-        <div
-          className={cn(
-            'card-surface shadow-card-glow grid gap-5 p-6 sm:gap-6 sm:p-8 md:grid-cols-2',
-            visible && 'animate-fade-up',
-            !visible && 'opacity-0'
-          )}
-        >
+const Skills = () => (
+  <SectionShell id="skills">
+    <SectionHeader command="cat skills" title="Technical Skills">
+      <TerminalWindow title="skills — zsh" className="shadow-card-glow">
+        <div className="grid gap-5 bg-[#14151a] p-6 sm:gap-6 sm:p-8 md:grid-cols-2">
           {skillCategories.map((cat) => (
             <div
               key={cat.category}
               className="rounded-xl border border-border/50 bg-background/20 p-5 sm:p-6"
             >
-              <h3 className="mb-4 text-base font-semibold tracking-tight text-foreground sm:text-lg">
-                {cat.category}
+              <h3 className="mb-4 font-mono text-sm text-slate-400">
+                {`// ${cat.category}`}
               </h3>
               <div className="flex flex-wrap gap-2.5">
                 {cat.skills.map((skill) => (
@@ -170,9 +131,9 @@ const Skills = () => {
             </div>
           ))}
         </div>
-      </div>
-    </SectionShell>
-  );
-};
+      </TerminalWindow>
+    </SectionHeader>
+  </SectionShell>
+);
 
 export default Skills;

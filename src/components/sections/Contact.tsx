@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 import { CheckCircle2, Mail, Send, Type, User } from 'lucide-react';
@@ -6,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import SectionShell from '@/components/layout/SectionShell';
 import SectionHeader from '@/components/layout/SectionHeader';
+import { TerminalChrome } from '@/components/layout/TerminalChrome';
 import { cn } from '@/lib/utils';
 
 const fieldClass =
-  'h-11 rounded-xl border-slate-700/50 bg-slate-950/50 pl-11 pr-4 text-white placeholder:text-slate-500 transition-colors duration-200 hover:border-slate-600/60 focus:border-sky-400/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0';
+  'h-11 rounded-xl border-slate-700/50 bg-slate-950/50 pl-11 pr-4 text-white placeholder:text-slate-500 transition-colors duration-200 hover:border-slate-600/60 focus:border-emerald-500/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0';
 
 const FieldShell = ({
   icon: Icon,
@@ -29,21 +31,10 @@ const FieldShell = ({
   </div>
 );
 
-const TerminalChrome = ({ title }: { title: string }) => (
-  <div className="relative flex shrink-0 items-center gap-2 border-b border-slate-700/60 bg-[#2d2d2d] px-4 py-2.5">
-    <div className="relative z-10 flex gap-2">
-      <div className="h-3 w-3 rounded-full bg-[#ff5f57]" aria-hidden />
-      <div className="h-3 w-3 rounded-full bg-[#febc2e]" aria-hidden />
-      <div className="h-3 w-3 rounded-full bg-[#28c840]" aria-hidden />
-    </div>
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-20">
-      <span className="text-center font-mono text-xs tracking-wide text-slate-400">{title}</span>
-    </div>
-  </div>
-);
-
 const Contact = () => {
   const [state, handleSubmit] = useForm('mjgedlad');
+  const [revealed, setRevealed] = useState(false);
+  const handleRevealed = useCallback((v: boolean) => setRevealed(v), []);
 
   return (
     <SectionShell
@@ -51,9 +42,15 @@ const Contact = () => {
       className="flex h-full min-h-0 flex-col overflow-hidden pb-4 md:pb-5"
       containerClassName="mx-auto flex max-w-3xl min-h-0 flex-1 flex-col"
     >
-      <SectionHeader title="Contact" className="mb-5 shrink-0 md:mb-6" />
+      <SectionHeader command="cat contact" title="Contact" className="shrink-0" onRevealed={handleRevealed} />
 
-      <div className="card-surface shadow-terminal animate-fade-up flex min-h-0 w-full flex-1 flex-col overflow-hidden">
+      <div
+        className={cn(
+          'card-surface shadow-terminal mt-5 flex min-h-0 w-full flex-1 flex-col overflow-hidden transition-all duration-500 ease-out md:mt-6',
+          revealed ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+        )}
+        style={{ transitionDelay: revealed ? '120ms' : '0ms' }}
+      >
         <TerminalChrome title="contact - zsh" />
 
         {state.succeeded ? (
@@ -139,7 +136,7 @@ const Contact = () => {
                 required
                 aria-label="Message"
                 placeholder="Write your message..."
-                className="min-h-0 flex-1 resize-none rounded-xl border-slate-700/50 bg-slate-950/50 px-4 py-3 text-white placeholder:text-slate-500 transition-colors duration-200 hover:border-slate-600/60 focus:border-sky-400/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="min-h-0 flex-1 resize-none rounded-xl border-slate-700/50 bg-slate-950/50 px-4 py-3 text-white placeholder:text-slate-500 transition-colors duration-200 hover:border-slate-600/60 focus:border-emerald-500/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               />
               <ValidationError
                 prefix="Message"
@@ -152,7 +149,7 @@ const Contact = () => {
             <Button
               type="submit"
               disabled={state.submitting}
-              className="h-11 w-full shrink-0 rounded-xl border-0 bg-gradient-to-r from-sky-500 to-violet-500 font-medium text-white shadow-md transition-all duration-200 hover:from-sky-400 hover:to-violet-400 hover:shadow-lg disabled:pointer-events-none disabled:opacity-50"
+              className="h-11 w-full shrink-0 rounded-xl border border-emerald-500/30 bg-emerald-500/10 font-mono text-sm font-medium text-emerald-400 transition-all duration-200 hover:border-emerald-500/50 hover:bg-emerald-500/20 disabled:pointer-events-none disabled:opacity-50"
             >
               {state.submitting ? (
                 <>
