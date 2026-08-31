@@ -51,7 +51,7 @@ const Contact = () => {
       className="flex h-full min-h-0 flex-col overflow-hidden pb-4 md:pb-5"
       containerClassName="mx-auto flex max-w-3xl min-h-0 flex-1 flex-col"
     >
-      <SectionHeader title="Contact" className="mb-6 shrink-0 md:mb-8" />
+      <SectionHeader title="Contact" className="mb-5 shrink-0 md:mb-6" />
 
       <div className="card-surface shadow-terminal animate-fade-up flex min-h-0 w-full flex-1 flex-col overflow-hidden">
         <TerminalChrome title="contact - zsh" />

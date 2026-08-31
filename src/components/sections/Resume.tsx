@@ -1,7 +1,6 @@
 import { Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SectionShell from '@/components/layout/SectionShell';
-import SectionHeader from '@/components/layout/SectionHeader';
 import resumePdf from '@/assets/resume.pdf';
 
 const Resume = () => {
@@ -16,8 +15,6 @@ const Resume = () => {
 
   return (
     <SectionShell id="about" containerClassName="max-w-7xl">
-      <SectionHeader title="Resume" />
-
       <div className="mx-auto w-[min(100%,57rem)]">
         <div className="card-surface shadow-terminal overflow-hidden">
             <div className="relative flex min-h-12 items-center border-b border-slate-700/60 bg-[#2d2d2d] px-4 py-3 sm:px-5">

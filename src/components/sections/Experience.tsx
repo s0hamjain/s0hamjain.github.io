@@ -17,14 +17,25 @@ const Experience = () => {
     {
       company: 'The Washington Post',
       position: 'Software Engineer Intern',
-      period: 'Jun 2026 – Present',
+      period: 'Jun 2026 – Aug 2026',
       location: 'Washington, DC',
       achievements: [
-        'Build a complaint dispatch application for 2.5M+ digital and print subscribers using React, TypeScript, Express.js, and MySQL, helping carriers resolve service issues 40% faster.',
-        'Automate build, test, and deployment lifecycles for 6 full-stack apps by designing Jenkins pipelines with Groovy and Docker containerized agents.',
-        'Deploy 35+ microservices to ECS via AWS CDK stacks in Java that provision Route 53 DNS and load balancing automatically.',
+        'Accelerated service issue resolution by 75% across a 2.5M+ subscriber base by developing a full-stack application with React, TypeScript, Node.js, and MySQL to centralize issue tracking and operator workflows.',
+        'Scaled microservices traffic to 25,000+ daily requests by designing a networking layer with Akamai CDN for frontend delivery, AWS Application Load Balancer for request distribution, and Nginx for backend routing.',
+        'Automated CI/CD across 4 environments by developing AWS CDK infrastructure in Java and Jenkins pipelines that lint, test, compile, and deploy the application to AWS S3.',
+        'Shipped 50+ pull requests using AWS Kiro and GitHub Copilot to diagnose bugs and improve code quality.',
       ],
-      technologies: ['React', 'TypeScript', 'Express.js', 'MySQL', 'Jenkins', 'Groovy', 'Docker', 'AWS'],
+      technologies: [
+        'React',
+        'TypeScript',
+        'Node.js',
+        'MySQL',
+        'Java',
+        'Jenkins',
+        'AWS',
+        'AWS S3',
+        'GitHub Copilot',
+      ],
     },
     {
       company: 'ScottyLabs',
@@ -32,12 +43,11 @@ const Experience = () => {
       period: 'Aug 2025 – May 2026',
       location: 'Pittsburgh, PA',
       achievements: [
-        'Developed a campus dining PWA with React, Vite, JavaScript, and TypeScript for 10,000+ students across 30+ locations.',
-        'Engineered a Node.js web scraping service on Railway that serves dining data across 8 REST endpoints with 99% uptime.',
-        'Led distance-based and rating-based sorting features using React Query and geolocation data, tripling daily active sessions.',
-        'Configured GitHub Actions pipelines with Vitest and Oxlint to catch type and style issues before production.',
+        'Streamlined meal planning for 10,000+ monthly active users across 30 campus locations by developing a React, Vite, and TypeScript application for live dining availability and menus.',
+        'Drove a 70% increase in daily sessions by launching rating and distance-based search features with JavaScript and PostgreSQL, using Cursor to optimize feature iteration and code review.',
+        'Maintained 99.9% backend uptime while refreshing dining data every 5 minutes by building Node.js REST APIs, containerizing services with Docker, and deploying on Railway.',
       ],
-      technologies: ['React', 'Vite', 'JavaScript', 'TypeScript', 'Node.js', 'Railway', 'REST APIs', 'GitHub Actions'],
+      technologies: ['React', 'Vite', 'TypeScript', 'JavaScript', 'PostgreSQL', 'Node.js', 'REST APIs', 'Docker', 'Railway'],
     },
     {
       company: 'Vytal.AI',
@@ -45,11 +55,11 @@ const Experience = () => {
       period: 'May 2022 – Oct 2024',
       location: 'McLean, VA',
       achievements: [
-        'Created a gaze-tracking assessment platform with Python, Flask, Next.js, and HTML/CSS that processes 10,000+ ocular data points in under 30 seconds.',
-        'Managed MongoDB storage and AWS EC2 deployments to serve 300+ clinical beta users.',
-        'Collaborated across software engineering and ML teams via Agile sprints with Jira and Notion, delivering features biweekly.',
+        'Delivered brain health evaluations in under 30 seconds by building gaze-tracking software that processes 8,000+ ocular data points in Python and serves results through Flask to a Next.js frontend.',
+        'Coordinated biweekly feature releases for a cross-disciplinary team of 20+ engineers and ML researchers by organizing Agile sprints and tracking development progress in Jira.',
+        'Scaled cloud infrastructure for 300 beta users by managing MongoDB storage and deploying services on AWS EC2.',
       ],
-      technologies: ['Python', 'Flask', 'Next.js', 'HTML/CSS', 'MongoDB', 'AWS EC2', 'Jira'],
+      technologies: ['Python', 'Flask', 'Next.js', 'Jira', 'MongoDB', 'AWS EC2'],
     },
   ];
 

@@ -6,7 +6,7 @@ type SectionHeaderProps = {
 };
 
 const SectionHeader = ({ title, className }: SectionHeaderProps) => (
-  <div className={cn('mb-12 text-center md:mb-14', className)}>
+  <div className={cn('mb-8 text-center md:mb-10', className)}>
     <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
   </div>
 );

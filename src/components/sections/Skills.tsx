@@ -9,27 +9,28 @@ import {
   SiTypescript,
   SiCplusplus,
   SiHtml5,
-  SiCss3,
   SiMysql,
   SiFlask,
-  SiExpress,
   SiGit,
   SiGooglecloud,
   SiVite,
   SiNextdotjs,
-  SiSharp,
   SiKotlin,
   SiDocker,
   SiRailway,
   SiAmazon,
-  SiLinux,
   SiJenkins,
   SiJira,
   SiPostgresql,
-  SiGnubash,
   SiSpringboot,
-  SiAngular,
   SiFastapi,
+  SiGo,
+  SiMongodb,
+  SiGithubcopilot,
+  SiOpenai,
+  SiGooglegemini,
+  SiAnthropic,
+  SiOpenapiinitiative,
 } from 'react-icons/si';
 import { cn } from '@/lib/utils';
 import SectionShell from '@/components/layout/SectionShell';
@@ -37,58 +38,81 @@ import SectionHeader from '@/components/layout/SectionHeader';
 
 type SkillItem = { name: string; icon: ReactNode; colorClass: string; lucide?: boolean };
 
+const skillCategories: { category: string; skills: SkillItem[] }[] = [
+  {
+    category: 'Languages',
+    skills: [
+      { name: 'Java', icon: <Code2 />, colorClass: 'text-[#E76F00]', lucide: true },
+      { name: 'Python', icon: <SiPython />, colorClass: 'text-[#3776AB]' },
+      { name: 'TypeScript', icon: <SiTypescript />, colorClass: 'text-[#3178C6]' },
+      { name: 'JavaScript', icon: <SiJavascript />, colorClass: 'text-[#E8D44D]' },
+      { name: 'C/C++', icon: <SiCplusplus />, colorClass: 'text-[#00599C]' },
+      { name: 'SQL', icon: <SiMysql />, colorClass: 'text-[#4479A1]' },
+      { name: 'HTML/CSS', icon: <SiHtml5 />, colorClass: 'text-[#E34F26]' },
+      { name: 'Go', icon: <SiGo />, colorClass: 'text-[#00ADD8]' },
+      { name: 'Kotlin', icon: <SiKotlin />, colorClass: 'text-[#7F52FF]' },
+    ],
+  },
+  {
+    category: 'Frameworks & Technologies',
+    skills: [
+      { name: 'React', icon: <SiReact />, colorClass: 'text-[#61DAFB]' },
+      { name: 'Node.js', icon: <SiNodedotjs />, colorClass: 'text-[#339933]' },
+      { name: 'Spring Boot', icon: <SiSpringboot />, colorClass: 'text-[#6DB33F]' },
+      { name: 'FastAPI', icon: <SiFastapi />, colorClass: 'text-[#009688]' },
+      { name: 'Flask', icon: <SiFlask />, colorClass: 'text-zinc-200' },
+      { name: 'Next.js', icon: <SiNextdotjs />, colorClass: 'text-zinc-100' },
+      { name: 'Vite', icon: <SiVite />, colorClass: 'text-[#646CFF]' },
+      { name: 'REST APIs', icon: <SiOpenapiinitiative />, colorClass: 'text-[#6BA539]' },
+    ],
+  },
+  {
+    category: 'AI & Developer Tools',
+    skills: [
+      { name: 'Git', icon: <SiGit />, colorClass: 'text-[#F05032]' },
+      { name: 'Docker', icon: <SiDocker />, colorClass: 'text-[#2496ED]' },
+      { name: 'Jenkins', icon: <SiJenkins />, colorClass: 'text-[#D24939]' },
+      { name: 'Jira', icon: <SiJira />, colorClass: 'text-[#0052CC]' },
+      { name: 'GitHub Copilot', icon: <SiGithubcopilot />, colorClass: 'text-zinc-100' },
+      { name: 'AWS Kiro', icon: <SiAmazon />, colorClass: 'text-[#FF9900]' },
+      { name: 'Cursor', icon: <Code2 />, colorClass: 'text-sky-400', lucide: true },
+      { name: 'Claude', icon: <SiAnthropic />, colorClass: 'text-[#D4A574]' },
+      { name: 'GPT-4o', icon: <SiOpenai />, colorClass: 'text-zinc-100' },
+      { name: 'Gemini', icon: <SiGooglegemini />, colorClass: 'text-[#8E75B2]' },
+    ],
+  },
+  {
+    category: 'Cloud & Databases',
+    skills: [
+      { name: 'AWS', icon: <SiAmazon />, colorClass: 'text-[#FF9900]' },
+      { name: 'PostgreSQL', icon: <SiPostgresql />, colorClass: 'text-[#336791]' },
+      { name: 'MySQL', icon: <SiMysql />, colorClass: 'text-[#4479A1]' },
+      { name: 'MongoDB', icon: <SiMongodb />, colorClass: 'text-[#47A248]' },
+      { name: 'Google Cloud', icon: <SiGooglecloud />, colorClass: 'text-[#4285F4]' },
+      { name: 'Railway', icon: <SiRailway />, colorClass: 'text-[#B026FF]' },
+    ],
+  },
+];
+
+const SkillChip = ({ skill }: { skill: SkillItem }) => (
+  <span className="inline-flex items-center gap-2 rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-sm font-medium text-foreground/90 transition-colors duration-200 hover:border-border/80 hover:bg-background/60">
+    <span
+      className={cn(
+        'flex h-6 w-6 shrink-0 items-center justify-center [&_svg]:h-3.5 [&_svg]:w-3.5',
+        skill.lucide ? '[&_svg]:fill-none [&_svg]:stroke-current' : '[&_svg]:fill-current',
+        skill.colorClass
+      )}
+      aria-hidden
+    >
+      {skill.icon}
+    </span>
+    {skill.name}
+  </span>
+);
+
 const Skills = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-
-  const skillCategories: { category: string; skills: SkillItem[] }[] = [
-    {
-      category: 'Programming Languages',
-      skills: [
-        { name: 'Python', icon: <SiPython />, colorClass: 'text-[#3776AB]' },
-        { name: 'Java', icon: <Code2 />, colorClass: 'text-[#E76F00]', lucide: true },
-        { name: 'C', icon: <SiCplusplus />, colorClass: 'text-[#00599C]' },
-        { name: 'C++', icon: <SiCplusplus />, colorClass: 'text-[#00599C]' },
-        { name: 'TypeScript', icon: <SiTypescript />, colorClass: 'text-[#3178C6]' },
-        { name: 'JavaScript', icon: <SiJavascript />, colorClass: 'text-[#E8D44D]' },
-        { name: 'SQL', icon: <SiMysql />, colorClass: 'text-[#4479A1]' },
-        { name: 'HTML', icon: <SiHtml5 />, colorClass: 'text-[#E34F26]' },
-        { name: 'CSS', icon: <SiCss3 />, colorClass: 'text-[#1572B6]' },
-        { name: 'Kotlin', icon: <SiKotlin />, colorClass: 'text-[#7F52FF]' },
-        { name: 'Shell', icon: <SiGnubash />, colorClass: 'text-[#E6E6E6]' },
-        { name: 'Groovy', icon: <Code2 />, colorClass: 'text-zinc-400', lucide: true },
-      ],
-    },
-    {
-      category: 'Developer Tools',
-      skills: [
-        { name: 'Git', icon: <SiGit />, colorClass: 'text-[#F05032]' },
-        { name: 'AWS', icon: <SiAmazon />, colorClass: 'text-[#FF9900]' },
-        { name: 'Jenkins', icon: <SiJenkins />, colorClass: 'text-[#D24939]' },
-        { name: 'Docker', icon: <SiDocker />, colorClass: 'text-[#2496ED]' },
-        { name: 'Jira', icon: <SiJira />, colorClass: 'text-[#0052CC]' },
-        { name: 'Linux/Unix', icon: <SiLinux />, colorClass: 'text-[#FCC624]' },
-        { name: 'Google Cloud Platform', icon: <SiGooglecloud />, colorClass: 'text-[#4285F4]' },
-        { name: 'Railway', icon: <SiRailway />, colorClass: 'text-[#B026FF]' },
-        { name: 'MySQL', icon: <SiMysql />, colorClass: 'text-[#4479A1]' },
-        { name: 'PostgreSQL', icon: <SiPostgresql />, colorClass: 'text-[#336791]' },
-      ],
-    },
-    {
-      category: 'Frameworks & Technologies',
-      skills: [
-        { name: 'React', icon: <SiReact />, colorClass: 'text-[#61DAFB]' },
-        { name: 'Vite', icon: <SiVite />, colorClass: 'text-[#646CFF]' },
-        { name: 'Node.js', icon: <SiNodedotjs />, colorClass: 'text-[#339933]' },
-        { name: 'Spring Boot', icon: <SiSpringboot />, colorClass: 'text-[#6DB33F]' },
-        { name: 'Flask', icon: <SiFlask />, colorClass: 'text-zinc-200' },
-        { name: 'Angular', icon: <SiAngular />, colorClass: 'text-[#DD0031]' },
-        { name: 'Next.js', icon: <SiNextdotjs />, colorClass: 'text-zinc-100' },
-        { name: 'Express.js', icon: <SiExpress />, colorClass: 'text-zinc-400' },
-        { name: 'FastAPI', icon: <SiFastapi />, colorClass: 'text-[#009688]' },
-      ],
-    },
-  ];
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
@@ -123,82 +147,28 @@ const Skills = () => {
       <div ref={sectionRef} className="skills-section">
         <SectionHeader title="Technical Skills" />
 
-        <div>
-          <div
-            className={cn(
-              'card-surface shadow-card-glow p-8 md:p-10 lg:p-12',
-              visible && 'animate-fade-up',
-              !visible && 'opacity-0'
-            )}
-            style={visible ? { animationDelay: '0.05s' } : undefined}
-          >
-            <div className="grid gap-12 lg:grid-cols-3 lg:gap-0">
-              {skillCategories.map((cat, colIndex) => {
-                const skillsBefore = skillCategories
-                  .slice(0, colIndex)
-                  .reduce((sum, c) => sum + c.skills.length, 0);
-
-                return (
-                  <div
-                    key={cat.category}
-                    className={
-                      colIndex === 0
-                        ? 'lg:pr-10 xl:pr-14'
-                        : 'lg:border-l lg:border-border/60 lg:pl-10 xl:pl-14'
-                    }
-                  >
-                    <h3
-                      className={cn(
-                        'mb-6 border-b border-border/60 pb-3 text-xl font-bold tracking-tight text-foreground',
-                        visible && 'animate-fade-up',
-                        !visible && 'opacity-0'
-                      )}
-                      style={
-                        visible ? { animationDelay: `${0.1 + colIndex * 0.08}s` } : undefined
-                      }
-                    >
-                      {cat.category}
-                    </h3>
-                    <ul className="space-y-3">
-                      {cat.skills.map((skill, skillIdx) => {
-                        const i = skillsBefore + skillIdx;
-                        const delay =
-                          visible ? `${0.16 + colIndex * 0.03 + i * 0.022}s` : undefined;
-                        return (
-                          <li key={skill.name}>
-                            <div
-                              className={cn(
-                                'group flex items-center gap-3.5 rounded-lg py-0.5 transition-transform duration-200 ease-out hover:translate-x-1',
-                                visible && 'animate-skills-row',
-                                !visible && 'opacity-0'
-                              )}
-                              style={visible ? { animationDelay: delay } : undefined}
-                            >
-                              <span
-                                className={cn(
-                                  'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md border border-border/60 bg-background/50 transition-colors duration-200 hover:border-border/80 [&_svg]:h-[1.05rem] [&_svg]:w-[1.05rem] group-hover:scale-105 group-hover:shadow-sm',
-                                  skill.lucide
-                                    ? '[&_svg]:fill-none [&_svg]:stroke-current'
-                                    : '[&_svg]:fill-current',
-                                  skill.colorClass
-                                )}
-                                aria-hidden
-                              >
-                                {skill.icon}
-                              </span>
-                              <span className="text-[15px] font-medium leading-snug text-foreground/90 transition-colors duration-200 group-hover:text-foreground">
-                                {skill.name}
-                              </span>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
+        <div
+          className={cn(
+            'card-surface shadow-card-glow grid gap-5 p-6 sm:gap-6 sm:p-8 md:grid-cols-2',
+            visible && 'animate-fade-up',
+            !visible && 'opacity-0'
+          )}
+        >
+          {skillCategories.map((cat) => (
+            <div
+              key={cat.category}
+              className="rounded-xl border border-border/50 bg-background/20 p-5 sm:p-6"
+            >
+              <h3 className="mb-4 text-base font-semibold tracking-tight text-foreground sm:text-lg">
+                {cat.category}
+              </h3>
+              <div className="flex flex-wrap gap-2.5">
+                {cat.skills.map((skill) => (
+                  <SkillChip key={skill.name} skill={skill} />
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </SectionShell>
