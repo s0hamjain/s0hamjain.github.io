@@ -21,6 +21,7 @@ interface Project {
   links: ProjectLinks | null;
   image: string;
   imageAlt: string;
+  imageStyle?: string;
 }
 
 const projects: Project[] = [
@@ -78,7 +79,8 @@ const projects: Project[] = [
       demoLabel: "View Demo"
     },
     image: eyelsImage,
-    imageAlt: "EyeLS demo video title slide with gaze-tracking keyboard"
+    imageAlt: "EyeLS demo video title slide with gaze-tracking keyboard",
+    imageStyle: "object-center scale-[1.35] group-hover:scale-[1.4]"
   }
 ];
 
@@ -89,7 +91,7 @@ const ProjectVisual = ({ project }: { project: Project }) => {
         src={project.image}
         alt={project.imageAlt}
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out ${project.imageStyle ?? 'object-top scale-100 group-hover:scale-[1.03]'}`}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
     </div>

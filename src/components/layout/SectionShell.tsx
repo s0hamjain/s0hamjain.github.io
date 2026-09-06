@@ -11,20 +11,20 @@ type SectionShellProps = {
 };
 
 /**
- * Standard page wrapper: shared dark base, grid overlay, container width, and
- * top padding that clears the floating navbar.
+ * Standard page wrapper: clean dark base, cursor spotlight, container width,
+ * and top padding that clears the floating navbar.
  */
-const SectionShell = ({ id, children, className, containerClassName }: SectionShellProps) => (
-  <section
-    id={id}
-    className={cn('relative min-h-screen overflow-hidden bg-background pt-24 pb-20 md:pt-28', className)}
-  >
-    <div className="bg-grid pointer-events-none absolute inset-0 z-0" aria-hidden />
-    <div className="bg-noise pointer-events-none absolute inset-0 z-0" aria-hidden />
-    <div className={cn('container relative z-10 mx-auto max-w-6xl px-4 sm:px-6', containerClassName)}>
-      {children}
-    </div>
-  </section>
-);
+const SectionShell = ({ id, children, className, containerClassName }: SectionShellProps) => {
+  return (
+    <section
+      id={id}
+      className={cn('relative min-h-screen overflow-hidden bg-background pt-24 pb-20 md:pt-28', className)}
+    >
+      <div className={cn('container relative z-10 mx-auto max-w-6xl px-4 sm:px-6', containerClassName)}>
+        {children}
+      </div>
+    </section>
+  );
+};
 
 export default SectionShell;

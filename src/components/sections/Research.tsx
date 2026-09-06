@@ -84,7 +84,7 @@ const Research = () => {
               key={index}
               role="button"
               tabIndex={0}
-              className="card-surface shadow-card-glow cursor-pointer overflow-hidden transition-all duration-300 hover:border-slate-600/60 focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="card-surface shadow-card-glow group cursor-pointer overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
             onClick={() => setSelectedPublication(pub)}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
@@ -123,6 +123,11 @@ const Research = () => {
                   <p className="text-sm leading-relaxed text-muted-foreground">
                     {getTruncatedAbstract(pub.description)}
                   </p>
+
+                  <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-xs text-slate-500 transition-colors duration-200 group-hover:text-emerald-400">
+                    read more
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+                  </span>
                 </div>
 
                 <Button
@@ -166,15 +171,6 @@ const Research = () => {
                   <p className="text-base leading-relaxed text-slate-300">
                     {selectedPublication.description}
                   </p>
-                  {!!selectedPublication.keywords.length && (
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPublication.keywords.map((keyword) => (
-                        <span key={keyword} className="rounded-md border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-0.5 font-mono text-xs text-emerald-400/80">
-                          {keyword}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </DialogDescription>
               </DialogHeader>
               <div className="mt-6 flex justify-end">

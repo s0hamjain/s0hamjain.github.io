@@ -5,16 +5,19 @@ import Footer from '@/components/Footer';
 import { NAV_ITEMS, paths } from '@/lib/siteRoutes';
 import { cn } from '@/lib/utils';
 
+
 const SiteLayout = () => {
   const location = useLocation();
   const isHome = location.pathname === paths.home;
   const isContact = location.pathname === paths.contact;
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     setMenuOpen(false);
     setScrolled(false);
+    setScrollProgress(0);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -22,6 +25,8 @@ const SiteLayout = () => {
 
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(h > 0 ? window.scrollY / h : 0);
     };
 
     onScroll();
@@ -48,6 +53,13 @@ const SiteLayout = () => {
         isContact ? 'h-dvh overflow-hidden' : 'min-h-dvh'
       )}
     >
+      {!isHome && scrollProgress > 0 && (
+        <div
+          className="fixed left-0 top-0 z-[60] h-[2px] bg-emerald-400/70 transition-[width] duration-100"
+          style={{ width: `${scrollProgress * 100}%` }}
+        />
+      )}
+
       {!isHome && (
         <header
           className={cn(

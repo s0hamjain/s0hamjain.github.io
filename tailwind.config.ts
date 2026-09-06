@@ -111,6 +111,10 @@ export default {
         "cursor-blink": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" }
+        },
+        "page-enter": {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" }
         }
       },
       animation: {
@@ -124,7 +128,8 @@ export default {
         "terminal-item-in": "terminal-item-in 0.4s ease-out both",
         "cursor-blink": "cursor-blink 1s step-end infinite",
         "float": "float 3s ease-in-out infinite",
-        "pulse-glow": "pulse-glow 2s ease-in-out infinite"
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "page-enter": "page-enter 0.4s ease-out both"
       },
     },
   },

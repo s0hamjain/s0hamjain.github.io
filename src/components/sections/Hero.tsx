@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Github, Linkedin, Mail, Youtube } from 'lucide-react';
 import profileImage from '@/assets/8898.jpg';
@@ -18,10 +18,11 @@ const SOCIAL_LINKS = [
   { href: 'https://www.youtube.com/@CodingWithSohamJain', label: 'YouTube', icon: Youtube, color: 'text-[#e06060]' },
 ];
 
-const ROLES = ['Student', 'Software Engineer', 'AI Developer'];
+const ROLES = ['CS @ CMU', 'Software Engineer', 'AI Developer'];
 
 const Hero = () => {
   const navigate = useNavigate();
+  const sectionRef = useRef<HTMLElement>(null);
   const [nameChars, setNameChars] = useState(0);
   const [terminalChars, setTerminalChars] = useState(0);
   const [showSections, setShowSections] = useState(false);
@@ -56,11 +57,10 @@ const Hero = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background"
     >
-      <div className="bg-grid pointer-events-none absolute inset-0 z-0" aria-hidden />
-      <div className="bg-noise pointer-events-none absolute inset-0 z-0" aria-hidden />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 text-center lg:mb-10">
@@ -80,7 +80,7 @@ const Hero = () => {
               {NAME_TYPEWRITER.slice(nameChars)}
             </span>
           </h1>
-          <p className="mt-5 font-mono text-[13px] tracking-wide text-slate-400 sm:text-sm">
+          <p className="mt-5 font-mono text-sm tracking-wide text-slate-400 sm:text-base">
             {ROLES.map((role, i) => (
               <span key={role}>
                 {i > 0 && <span className="mx-2 text-slate-600">/</span>}
