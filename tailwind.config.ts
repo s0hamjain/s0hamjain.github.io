@@ -14,8 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        sans: ['Geist', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -112,6 +111,10 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" }
         },
+        "scroll-cue": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(200%)" }
+        },
         "page-enter": {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" }
@@ -129,7 +132,8 @@ export default {
         "cursor-blink": "cursor-blink 1s step-end infinite",
         "float": "float 3s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "page-enter": "page-enter 0.4s ease-out both"
+        "page-enter": "page-enter 0.4s ease-out both",
+        "scroll-cue": "scroll-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite"
       },
     },
   },

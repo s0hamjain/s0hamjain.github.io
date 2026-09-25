@@ -1,154 +1,96 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Outlet } from 'react-router-dom';
 import Footer from '@/components/Footer';
-import { NAV_ITEMS, paths } from '@/lib/siteRoutes';
+import Hero from '@/components/sections/Hero';
+import { NAV_ITEMS, SECTION_IDS, scrollToSection } from '@/lib/siteRoutes';
+import type { SectionId } from '@/lib/siteRoutes';
+import { startSmoothScroll } from '@/lib/smoothScroll';
 import { cn } from '@/lib/utils';
 
-
 const SiteLayout = () => {
-  const location = useLocation();
-  const isHome = location.pathname === paths.home;
-  const isContact = location.pathname === paths.contact;
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [active, setActive] = useState<SectionId | null>(null);
+
+  useEffect(() => startSmoothScroll(), []);
 
   useEffect(() => {
-    setMenuOpen(false);
-    setScrolled(false);
-    setScrollProgress(0);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (isHome) return;
-
     const onScroll = () => {
-      setScrolled(window.scrollY > 12);
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(h > 0 ? window.scrollY / h : 0);
+      // Active section: the last one whose top has crossed the middle of the viewport.
+      const line = window.innerHeight / 2;
+      let current: SectionId | null = null;
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= line) current = id;
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+        current = SECTION_IDS[SECTION_IDS.length - 1];
+      }
+      setActive(current ?? SECTION_IDS[0]);
     };
 
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [isHome, location.pathname]);
-
-  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    cn(
-      'rounded-md px-5 py-2 font-mono text-sm font-medium whitespace-nowrap tracking-wide transition-colors duration-200',
-      isActive
-        ? scrolled
-          ? 'bg-emerald-500/10 text-emerald-400'
-          : 'text-emerald-400'
-        : scrolled
-          ? 'text-slate-400 hover:bg-slate-800/60 hover:text-emerald-400'
-          : 'text-slate-400 hover:text-emerald-400'
-    );
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
 
   return (
-    <div
-      className={cn(
-        'flex flex-col bg-background',
-        isContact ? 'h-dvh overflow-hidden' : 'min-h-dvh'
-      )}
-    >
-      {!isHome && scrollProgress > 0 && (
-        <div
-          className="fixed left-0 top-0 z-[60] h-[2px] bg-emerald-400/70 transition-[width] duration-100"
-          style={{ width: `${scrollProgress * 100}%` }}
-        />
-      )}
+    <div className="relative min-h-dvh bg-background">
+      <div className="page-glow pointer-events-none fixed inset-0" aria-hidden />
 
-      {!isHome && (
-        <header
-          className={cn(
-            'fixed left-0 right-0 z-50 transition-[top,padding] duration-300',
-            scrolled ? 'top-4' : 'top-0 pt-5'
-          )}
-        >
-          {/* Desktop */}
-          <nav
-            aria-label="Primary"
-            className={cn(
-              'mx-auto hidden w-max min-w-[38rem] items-center justify-center transition-all duration-300 md:flex lg:min-w-[46rem]',
-              scrolled
-                ? 'gap-1 rounded-full border border-slate-700/60 bg-[#131318]/85 px-3 py-2.5 shadow-lg shadow-black/30 backdrop-blur-md'
-                : 'gap-1 bg-transparent p-0'
-            )}
-          >
-            {NAV_ITEMS.map(({ to, label }) => (
-              <NavLink key={to} to={to} end={to === paths.home} className={navLinkClass}>
-                {label}
-              </NavLink>
-            ))}
+      <Hero />
+
+      <div className="relative lg:flex">
+        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-52 lg:shrink-0 lg:items-center lg:pl-10 xl:w-60 xl:pl-12">
+          <nav aria-label="Primary">
+            <ul className="space-y-1">
+              {NAV_ITEMS.map(({ id, label }) => {
+                const isActive = active === id;
+                return (
+                  <li key={id}>
+                    <a
+                      href={`#${id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection(id);
+                      }}
+                      aria-current={isActive ? 'true' : undefined}
+                      className="group flex items-center gap-3 py-2.5"
+                    >
+                      <span
+                        className={cn(
+                          'h-px transition-all duration-300 ease-out',
+                          isActive
+                            ? 'w-12 bg-foreground'
+                            : 'w-6 bg-muted-foreground/60 group-hover:w-12 group-hover:bg-foreground',
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          'text-sm font-medium transition-colors duration-300',
+                          isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground',
+                        )}
+                      >
+                        {label}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
+        </aside>
 
-          {/* Mobile */}
-          <div className="relative flex items-center justify-between px-4 md:hidden">
-            <span className="h-10 w-10" aria-hidden />
-            <Link
-              to={paths.home}
-              className={cn(
-                'px-5 py-2.5 font-mono text-base font-medium text-slate-100 transition-all duration-300',
-                scrolled
-                  ? 'rounded-full border border-slate-700/60 bg-[#131318]/85 shadow-lg shadow-black/30 backdrop-blur-md'
-                  : 'rounded-full bg-transparent'
-              )}
-            >
-              Soham Jain
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
-              className={cn(
-                'flex h-10 w-10 items-center justify-center text-slate-300 transition-all duration-300',
-                scrolled || menuOpen
-                  ? cn(
-                      'rounded-full border border-slate-700/60 bg-[#131318]/85 shadow-lg shadow-black/30 backdrop-blur-md',
-                      menuOpen ? 'bg-slate-700/70 text-slate-100' : 'hover:bg-slate-800/70 hover:text-slate-100'
-                    )
-                  : 'rounded-full bg-transparent hover:text-slate-100'
-              )}
-            >
-              {menuOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
-            </button>
-
-            {menuOpen && (
-              <nav
-                aria-label="Primary"
-                className="absolute right-4 top-[3.25rem] flex w-56 flex-col gap-1 rounded-2xl border border-slate-700/60 bg-[#131318]/95 p-2 shadow-xl shadow-black/40 backdrop-blur-md"
-              >
-                {NAV_ITEMS.map(({ to, label }) => (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    end={to === paths.home}
-                    className={({ isActive }) =>
-                      cn(
-                        'rounded-xl px-4 py-2.5 font-mono text-[14px] font-medium transition-colors duration-200',
-                        isActive
-                          ? 'bg-emerald-500/10 text-emerald-400'
-                          : 'text-slate-300 hover:bg-slate-800/60 hover:text-emerald-400'
-                      )
-                    }
-                  >
-                    {label}
-                  </NavLink>
-                ))}
-              </nav>
-            )}
+        <main className="min-w-0 flex-1 px-6 pb-24 md:px-12 lg:pb-32 lg:pl-4 lg:pr-12 xl:pr-20">
+          <div className="mx-auto max-w-[1400px]">
+            <Outlet />
           </div>
-        </header>
-      )}
-
-      <div className={cn('flex flex-1 flex-col', isContact && 'min-h-0')}>
-        <Outlet />
+        </main>
       </div>
 
-      {!isHome && <Footer />}
+      <Footer />
     </div>
   );
 };

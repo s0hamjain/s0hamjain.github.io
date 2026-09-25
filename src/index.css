@@ -2,110 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Beautiful tech-focused design system for personal portfolio */
-
 @layer base {
   :root {
-    /* Matches the hero's #0b0c0f so every page shares one base */
-    --background: 225 15% 5%;
-    --foreground: 0 0% 98%;
+    --background: 240 6% 4%;
+    --foreground: 240 5% 96%;
 
-    --card: 240 10% 7%;
-    --card-foreground: 0 0% 95%;
+    --card: 240 5% 7%;
+    --card-foreground: 240 5% 96%;
 
-    --popover: 240 10% 7%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 240 5% 7%;
+    --popover-foreground: 240 5% 96%;
 
-    /* Terminal emerald — same as the home prompt (~ $) */
-    --primary: 160 72% 39%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 217 92% 70%;
+    --primary-foreground: 240 6% 6%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 240 5% 96%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 5% 62%;
 
-    --accent: 240 4% 16%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 240 4% 14%;
+    --accent-foreground: 240 5% 96%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 160 72% 39%;
+    --border: 240 4% 15%;
+    --input: 240 4% 17%;
+    --ring: 217 92% 70%;
 
-    --radius: 0.75rem;
-
-    /* Custom design tokens */
-    --primary-gradient: hsl(160, 72%, 39%);
-    --hero-gradient: hsl(240, 10%, 3.9%);
-    --card-gradient: hsl(240, 10%, 7%);
-    --text-gradient: hsl(0, 0%, 98%);
-    
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -2px hsl(240, 10%, 3.9% / 0.3);
-    --shadow-medium: 0 8px 30px -4px hsl(240, 10%, 3.9% / 0.4);
-    --shadow-hard: 0 25px 50px -12px hsl(240, 10%, 3.9% / 0.6);
-    --glow: 0 0 40px hsl(160, 72%, 39% / 0.18);
-
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --radius: 0.875rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 160 72% 39%;
-  }
-
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-
-    --primary: 160 72% 39%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 160 72% 39%;
-
-    /* Light mode overrides */
-    --hero-gradient: hsl(0, 0%, 100%);
-    --card-gradient: hsl(0, 0%, 100%);
-    --shadow-soft: 0 4px 20px -2px hsl(240, 5.9%, 10% / 0.1);
-    --shadow-medium: 0 8px 30px -4px hsl(240, 5.9%, 10% / 0.15);
-    --shadow-hard: 0 25px 50px -12px hsl(240, 5.9%, 10% / 0.25);
+    --sidebar-ring: 217 92% 70%;
   }
 }
 
@@ -116,235 +52,66 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv11';
   }
 
-  html {
-    scroll-behavior: smooth;
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
   }
 }
 
 @layer utilities {
-  /* Shared subtle grid overlay used behind every section */
-  .bg-grid {
-    background-image:
-      linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
-    background-size: 32px 32px;
+  /* Soft ambient glow fixed behind the page */
+  .page-glow {
+    background:
+      radial-gradient(50% 45% at 15% 10%, hsl(var(--primary) / 0.09), transparent 70%),
+      radial-gradient(40% 40% at 90% 90%, hsl(260 80% 70% / 0.05), transparent 70%);
   }
 
-  .bg-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    opacity: 0.035;
-  }
-
-  /* Signature card surface (terminal windows, section cards) */
-  .card-surface {
-    border-radius: 0.9rem;
-    border: 1px solid rgba(148, 163, 184, 0.14);
-    background-color: #12141a;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  }
-
-  /* Strong glow for hero terminal / feature windows */
-  .shadow-terminal {
-    box-shadow:
-      0 0 0 1px rgba(148, 163, 184, 0.06),
-      0 24px 48px -20px rgba(0, 0, 0, 0.65);
-  }
-
-  /* Softer glow for content cards */
-  .shadow-card-glow {
-    box-shadow:
-      0 0 0 1px rgba(148, 163, 184, 0.05),
-      0 16px 32px -20px rgba(0, 0, 0, 0.6);
-  }
-
-  .text-gradient {
-    background: var(--text-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-gradient {
-    background: var(--hero-gradient);
-  }
-
-  .card-gradient {
-    background: var(--card-gradient);
-  }
-
-  .primary-gradient {
-    background: var(--primary-gradient);
-  }
-
-  .shadow-soft {
-    box-shadow: var(--shadow-soft);
-  }
-
-  .shadow-medium {
-    box-shadow: var(--shadow-medium);
-  }
-
-  .shadow-hard {
-    box-shadow: var(--shadow-hard);
-  }
-
-  .glow {
-    box-shadow: var(--glow);
-  }
-
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
-
-  .transition-bounce {
-    transition: var(--transition-bounce);
-  }
-
-  .animate-fade-up {
-    animation: fade-up 0.6s ease-out;
-    will-change: transform, opacity;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out;
-    will-change: opacity;
-  }
-
-  .animate-slide-in {
-    animation: slide-in 0.5s ease-out;
-    will-change: transform, opacity;
-  }
-
-  .animate-typing {
-    animation: typing 1.5s steps(12, end);
-    will-change: width;
-  }
-
-  .animate-typing-blink {
-    animation: typing 0.8s linear, blink 1s step-end infinite;
-    will-change: width, border-color;
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-    will-change: transform;
-  }
-
-  /* Skills section: staggered row entrance */
-  .animate-skills-row {
-    animation: skills-row-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
-    will-change: transform, opacity;
-  }
-
-  /* Slightly snappier than global fade-up; fill fixes stagger delays */
-  .skills-section .animate-fade-up {
-    animation: fade-up 0.45s ease-out both;
-  }
-
-  /* Optimized background image loading */
-  .hero-bg {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
-}
-
-@keyframes fade-up {
-  0% {
+  /* Scroll reveal (see Reveal.tsx) */
+  .reveal {
     opacity: 0;
-    transform: translate3d(0, 30px, 0);
+    transform: translate3d(0, 24px, 0);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  100% {
+
+  .reveal.is-visible {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }
 
-@keyframes skills-row-in {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-skills-row {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
+/* Brand-tinted social links: set --brand / --brand-ink / --on-brand inline. */
+@layer components {
+  .social-link {
+    color: var(--brand-ink, var(--brand));
+    border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+    background: color-mix(in srgb, var(--brand) 10%, transparent);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
-  .skills-section .animate-fade-up {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes slide-in {
-  0% {
-    opacity: 0;
-    transform: translate3d(-30px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes typing {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 9.5ch; /* Precise width to stop at end of last letter */
-  }
-}
-
-@keyframes blink {
-  0%, 50% {
-    border-color: transparent;
-  }
-  51%, 100% {
-    border-color: hsl(var(--primary));
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -10px, 0);
-  }
-}
-
-/* Smooth hero name reveal: each character fades in with slight rise */
-@keyframes hero-char-in {
-  0% {
-    opacity: 0;
-    transform: translateY(0.15em);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  .social-link:hover,
+  .social-link:focus-visible {
+    color: var(--on-brand);
+    background: var(--brand);
+    border-color: var(--brand);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--brand) 70%, transparent);
+    outline: none;
   }
 }

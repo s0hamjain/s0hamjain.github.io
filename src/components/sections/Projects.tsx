@@ -1,16 +1,16 @@
-import { ExternalLink, Github } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowUpRight, Github } from 'lucide-react';
 import SectionShell from '@/components/layout/SectionShell';
-import SectionHeader from '@/components/layout/SectionHeader';
-import TechBadge from '@/components/TechBadge';
+import Reveal from '@/components/layout/Reveal';
+import { useScrollFocus } from '@/hooks/useScrollFocus';
+import TechStack from '@/components/TechStack';
+import clarityImage from '@/assets/projects/clarity.png';
 import spryntImage from '@/assets/projects/sprynt.png';
 import routineRemindImage from '@/assets/projects/routineremind.jpg';
-import eyelsImage from '@/assets/projects/eyels.jpg';
 
 interface ProjectLinks {
-  demo: string;
+  demo?: string;
   github: string;
-  demoLabel: string;
+  demoLabel?: string;
 }
 
 interface Project {
@@ -26,185 +26,142 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "Sprynt",
-    description: "Incident response platform that keeps on-call engineers aligned during live outages with a shared workspace for investigation, action items, and AI-assisted analysis.",
-    period: "Mar 2026 - Present",
-    technologies: [
-      "Next.js",
-      "React",
-      "WebSockets",
-      "FastAPI",
-      "PostgreSQL",
-      "AWS S3",
-      "Jira",
-      "OAuth 2.0"
-    ],
+    title: 'Clarity',
+    description:
+      'Native macOS app that lets developers visually debug programs in under 2 minutes: it captures a selected code region, interprets it with Gemini, and uses Claude to generate animated Manim execution traces, orchestrated by a Go backend with MongoDB Atlas vector search.',
+    period: 'Sep 2026 - Present',
+    technologies: ['Python', 'JavaScript', 'Shell', 'Go', 'Gemini API', 'Anthropic API', 'MongoDB'],
     links: {
-      demo: "https://sprynt-mu.vercel.app/",
-      github: "https://github.com/kanisiva2/Sprynt",
-      demoLabel: "Visit Site"
+      demo: 'https://clarity-web-black.vercel.app/',
+      github: 'https://github.com/s0hamjain/Clarity',
+      demoLabel: 'Visit Site',
+    },
+    image: clarityImage,
+    imageAlt: 'Clarity macOS app icon',
+    imageStyle: 'object-contain p-12 md:p-20 group-hover:scale-[1.03]',
+  },
+  {
+    title: 'Sprynt',
+    description:
+      'End-to-end production debugging platform that consolidates 5+ incident response tools into one shared workspace for on-call engineers, with Claude-powered workflows that assign Jira tickets and recommend GitHub code fixes from Zoom transcripts, plus automated meeting reports.',
+    period: 'Mar 2026 - Aug 2026',
+    technologies: ['Next.js', 'React', 'Go', 'FastAPI', 'PostgreSQL', 'AWS S3', 'Jira', 'Anthropic API'],
+    links: {
+      demo: 'https://sprynt-mu.vercel.app/',
+      github: 'https://github.com/s0hamjain/Sprynt',
+      demoLabel: 'Visit Site',
     },
     image: spryntImage,
-    imageAlt: "Sprynt landing page showing the live incident workspace"
+    imageAlt: 'Sprynt landing page showing the live incident workspace',
+    imageStyle: 'object-cover object-center group-hover:scale-[1.03]',
   },
   {
-    title: "RoutineRemind",
-    description: "Patent-pending Android + web app that helps children with autism follow daily routines through visual task cards and an AI chatbot.",
-    period: "Jun 2022 - Aug 2025",
-    technologies: [
-      "Kotlin",
-      "Java",
-      "Spring Boot",
-      "Angular",
-      "C++",
-      "Google Cloud Platform",
-      "Docker"
-    ],
+    title: 'RoutineRemind',
+    description:
+      'Patent-pending Android + web app that helps children with autism follow daily routines through visual task cards and an AI chatbot.',
+    period: 'Jun 2022 - Aug 2025',
+    technologies: ['Kotlin', 'Java', 'Spring Boot', 'Angular', 'C++', 'Google Cloud Platform', 'Docker'],
     links: {
-      demo: "https://www.congressionalappchallenge.us/22-va10/",
-      github: "https://github.com/s0hamjain/RoutineRemind",
-      demoLabel: "Read More"
+      demo: 'https://www.congressionalappchallenge.us/22-va10/',
+      github: 'https://github.com/s0hamjain/RoutineRemind',
+      demoLabel: 'Read More',
     },
     image: routineRemindImage,
-    imageAlt: "RoutineRemind title card from the Congressional App Challenge demo video"
+    imageAlt: 'RoutineRemind title card from the Congressional App Challenge demo video',
   },
-  {
-    title: "EyeLS",
-    description: "Accessible gaze-tracking web application designed to enable ALS patients to communicate nonverbally using precise eye movement detection.",
-    period: "Aug 2023 - Present",
-    technologies: ["JavaScript", "HTML/CSS", "Computer Vision", "Kalman Filtering", "Monte Carlo"],
-    links: {
-      demo: "https://www.youtube.com/watch?v=YAlBLGYtgLA",
-      github: "https://github.com/s0hamjain/EyeLS",
-      demoLabel: "View Demo"
-    },
-    image: eyelsImage,
-    imageAlt: "EyeLS demo video title slide with gaze-tracking keyboard",
-    imageStyle: "object-center scale-[1.35] group-hover:scale-[1.4]"
-  }
 ];
 
-const ProjectVisual = ({ project }: { project: Project }) => {
-  const visual = (
-    <div className="relative h-full min-h-[220px] overflow-hidden sm:min-h-[280px]">
-      <img
-        src={project.image}
-        alt={project.imageAlt}
-        loading="lazy"
-        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out ${project.imageStyle ?? 'object-top scale-100 group-hover:scale-[1.03]'}`}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
-    </div>
-  );
+const ProjectPanel = ({ project, first }: { project: Project; first: boolean }) => {
+  const focusRef = useScrollFocus<HTMLDivElement>();
+  const primaryHref = project.links?.demo ?? project.links?.github;
 
-  if (project.links?.demo) {
-    return (
-      <a
-        href={project.links.demo}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Open ${project.title}`}
-        className="block h-full"
-      >
-        {visual}
-      </a>
-    );
-  }
-
-  return visual;
-};
-
-const Projects = () => {
   return (
-    <SectionShell id="projects" containerClassName="max-w-6xl">
-      <SectionHeader command="cat projects" title="Featured Projects">
-        <div className="flex flex-col gap-10">
-          {projects.map((project, index) => (
-            <article
-              key={project.title}
-              className="card-surface shadow-card-glow group overflow-hidden transition-colors duration-300 hover:border-slate-600/60"
+    // The first card sits right under the section heading; later ones get a full screen each.
+    <div
+      className={
+        first ? 'pb-10 lg:flex lg:min-h-[85dvh] lg:items-start' : 'py-10 lg:flex lg:min-h-dvh lg:items-center lg:py-0'
+      }
+    >
+      <div ref={focusRef} className="w-full will-change-transform">
+        <Reveal>
+          <article className="group grid overflow-hidden rounded-3xl border border-border bg-card/70 lg:grid-cols-[1.15fr_1fr]">
+            <a
+              href={primaryHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${project.title}`}
+              className="relative block aspect-[16/10] overflow-hidden bg-secondary/40 lg:aspect-auto lg:min-h-[480px]"
             >
-            <div className="flex items-center gap-2 border-b border-slate-700/40 bg-slate-900/50 px-5 py-2.5 font-mono text-xs text-slate-500">
-              <span className="text-emerald-400/70">{'>'}</span>
-              <span>{project.title.toLowerCase().replace(/\s+/g, '-')}</span>
-              <span className="ml-auto text-slate-600">{project.period}</span>
-            </div>
+              <img
+                src={project.image}
+                alt={project.imageAlt}
+                loading="lazy"
+                className={`absolute inset-0 h-full w-full transition-transform duration-700 ease-out ${project.imageStyle ?? 'object-cover object-top group-hover:scale-[1.03]'}`}
+              />
+            </a>
 
-            <div className={`grid lg:grid-cols-2 ${index % 2 === 1 ? 'lg:[direction:rtl]' : ''}`}>
-              <div className={`border-b border-border/40 lg:border-b-0 [direction:ltr] ${index % 2 === 1 ? 'lg:border-l' : 'lg:border-r'} border-border/40`}>
-                <ProjectVisual project={project} />
-              </div>
+            <div className="flex flex-col p-7 sm:p-10 xl:p-12">
+              <p className="text-sm text-muted-foreground">{project.period}</p>
+              <h3 className="mt-3 text-3xl font-semibold tracking-tight text-foreground xl:text-4xl">
+                {project.title}
+              </h3>
+              <p className="mt-4 text-[17px] leading-relaxed text-muted-foreground">{project.description}</p>
 
-              <div className="flex flex-col p-6 [direction:ltr] md:p-8">
-                <header className="mb-4">
-                  <p className="mb-1.5 font-mono text-sm text-slate-400">
-                    {`// ${project.period}`}
-                  </p>
-                  <h3 className="font-mono text-xl font-bold tracking-tight text-white md:text-2xl">
-                    {project.title}
-                  </h3>
-                </header>
+              <TechStack items={project.technologies} size="sm" className="mt-7" />
 
-                <p className="mb-6 text-base leading-relaxed text-foreground/75">
-                  {project.description}
-                </p>
-
-                <div className="mt-auto">
-                  <div className="border-t border-border/40 pt-5">
-                    <p className="mb-2.5 font-mono text-sm text-slate-400">{'// Tech Stack'}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.map((tech) => (
-                        <TechBadge key={`${project.title}-${tech}`} name={tech} />
-                      ))}
-                    </div>
-                  </div>
-
-                  {project.links && (
-                    <div className="mt-5 flex flex-wrap gap-3">
-                      <Button
-                        className="flex-1 border border-emerald-500/30 bg-emerald-500/10 font-mono text-xs font-medium text-emerald-400 transition-all duration-200 hover:border-emerald-500/50 hover:bg-emerald-500/20 sm:flex-none"
-                        asChild
-                      >
-                        <a href={project.links.demo} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-2 h-3.5 w-3.5" />
-                          {project.links.demoLabel}
-                        </a>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="flex-1 border-slate-700/60 bg-transparent font-mono text-xs text-slate-300 transition-all duration-200 hover:border-slate-500/70 hover:bg-slate-800/50 hover:text-slate-100 sm:flex-none"
-                        asChild
-                      >
-                        <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="mr-2 h-3.5 w-3.5" />
-                          source
-                        </a>
-                      </Button>
-                    </div>
+              {project.links && (
+                <div className="mt-auto flex flex-wrap gap-3 pt-9">
+                  {project.links.demo && (
+                    <a
+                      href={project.links.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex h-10 items-center gap-1.5 rounded-full bg-foreground px-5 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
+                    >
+                      {project.links.demoLabel}
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
                   )}
+                  <a
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-10 items-center gap-2 rounded-full border border-border px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <Github className="h-4 w-4" />
+                    Source
+                  </a>
                 </div>
-              </div>
+              )}
             </div>
           </article>
-          ))}
-        </div>
-
-        <div className="mt-14 flex items-center justify-center gap-3 font-mono text-sm text-slate-500">
-          <span className="text-emerald-400/60">$</span>
-          <span>more projects on</span>
-          <a
-            href="https://github.com/s0hamjain"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-slate-300 underline decoration-slate-600 underline-offset-4 transition-colors duration-200 hover:text-emerald-400 hover:decoration-emerald-400/40"
-          >
-            <Github className="h-4 w-4" />
-            github
-          </a>
-        </div>
-      </SectionHeader>
-    </SectionShell>
+        </Reveal>
+      </div>
+    </div>
   );
 };
+
+const Projects = () => (
+  <SectionShell id="projects" title="Projects">
+    {projects.map((project, i) => (
+      <ProjectPanel key={project.title} project={project} first={i === 0} />
+    ))}
+
+    <Reveal className="mt-4 flex justify-center">
+      <a
+        href="https://github.com/s0hamjain"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex items-center gap-3 rounded-full border border-border bg-card/70 py-2 pl-2 pr-6 text-base font-medium text-foreground shadow-[0_10px_30px_-15px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/25 hover:bg-secondary"
+      >
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-background transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-105">
+          <Github className="h-5 w-5" />
+        </span>
+        See more on GitHub
+        <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+      </a>
+    </Reveal>
+  </SectionShell>
+);
 
 export default Projects;
