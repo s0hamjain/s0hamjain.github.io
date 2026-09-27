@@ -105,6 +105,199 @@
     transform-origin: left;
   }
 
+  /* Shared demo motion (see components/demos) */
+  .demo-caret {
+    display: inline-block;
+    width: 0.55ch;
+    height: 1.05em;
+    margin-left: 1px;
+    vertical-align: -0.15em;
+    background: currentColor;
+    animation: demo-blink 1s step-end infinite;
+  }
+
+  .demo-packet {
+    animation: demo-travel 700ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  .demo-pop {
+    animation: demo-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .demo-rise {
+    animation: demo-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .demo-drop {
+    animation: demo-drop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .demo-fade {
+    animation: demo-fade 0.5s ease-out both;
+  }
+
+  .demo-pulse {
+    animation: demo-pulse 1.6s ease-in-out infinite;
+  }
+
+  .demo-ping {
+    animation: demo-ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .demo-spin {
+    animation: demo-spin 0.9s linear infinite;
+  }
+
+  .demo-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+    background-size: 200% 100%;
+    animation: demo-shimmer 1.4s linear infinite;
+  }
+
+  .demo-bar {
+    transform-origin: bottom;
+    animation: demo-bar 0.9s ease-in-out infinite;
+  }
+
+  .demo-ripple {
+    animation: demo-ripple 0.7s ease-out both;
+  }
+
+  @keyframes demo-grow-box {
+    from {
+      width: 0;
+      height: 0;
+    }
+  }
+
+  @keyframes demo-fill {
+    from {
+      width: 0;
+    }
+  }
+
+  @keyframes demo-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes demo-travel {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.6);
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy)) scale(1);
+    }
+  }
+
+  @keyframes demo-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes demo-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes demo-drop {
+    from {
+      opacity: 0;
+      transform: translateY(-18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes demo-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes demo-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  @keyframes demo-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes demo-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes demo-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes demo-bar {
+    0%,
+    100% {
+      transform: scaleY(0.3);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes demo-ripple {
+    from {
+      transform: scale(0.2);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+
   @keyframes heap-focus-in {
     from {
       opacity: 0;
@@ -135,7 +328,19 @@
 
   @media (prefers-reduced-motion: reduce) {
     .heap-focus,
-    .heap-focus-new {
+    .heap-focus-new,
+    .demo-caret,
+    .demo-packet,
+    .demo-pop,
+    .demo-rise,
+    .demo-drop,
+    .demo-fade,
+    .demo-pulse,
+    .demo-ping,
+    .demo-spin,
+    .demo-shimmer,
+    .demo-bar,
+    .demo-ripple {
       animation: none;
     }
 

@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { StageShell } from '../shared';
 import { CELL_BYTES, HEADER_BYTES, coalesce, findFit } from './model';
 import type { Heap } from './model';
 import { MAX_CELLS } from './script';
@@ -129,16 +130,6 @@ const TracePanel = ({ frame }: { frame: Frame }) => (
   </ol>
 );
 
-const Stat = ({ value, unit, label }: { value: string; unit: string; label: string }) => (
-  <div>
-    <p className="text-3xl font-semibold tabular-nums tracking-tight text-foreground sm:text-4xl">
-      {value}
-      <span className="ml-0.5 text-xl text-muted-foreground sm:text-2xl">{unit}</span>
-    </p>
-    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-  </div>
-);
-
 /** Share of the heap holding program data: allocated blocks minus their 8-byte headers. */
 function utilization(heap: Heap) {
   const payload = heap.blocks.filter((b) => b.alloc).reduce((sum, b) => sum + b.cells * CELL_BYTES - HEADER_BYTES, 0);
@@ -160,31 +151,19 @@ function throughput(heap: Heap) {
   return ops / ((performance.now() - start) / 1000) / 1e6;
 }
 
-const Stats = ({ heap, className }: { heap: Heap; className?: string }) => {
-  const util = useMemo(() => utilization(heap), [heap]);
-  const ops = useMemo(() => throughput(heap), [heap]);
-  return (
-    <div className={cn('flex gap-10', className)}>
-      <Stat value={util.toFixed(1)} unit="%" label="utilization" />
-      <Stat value={ops.toFixed(1)} unit="M" label="ops / second" />
-    </div>
-  );
-};
-
-/** The animated stage: program trace (with the headline stats under it) beside the heap grid. */
+/** The animated stage: program trace (with live stats under it) beside the heap grid. */
 const HeapStage = ({ frame }: { frame: Frame }) => {
   const isMobile = useIsMobile();
+  const util = useMemo(() => utilization(frame.heap), [frame.heap]);
+  const ops = useMemo(() => throughput(frame.heap), [frame.heap]);
+  const stats = [
+    { value: util.toFixed(1), unit: '%', label: 'utilization' },
+    { value: ops.toFixed(1), unit: 'M', label: 'ops / second' },
+  ];
   return (
-    <figure className="grid items-stretch gap-10 xl:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
-      <div className="hidden flex-col xl:flex">
-        <TracePanel frame={frame} />
-        <Stats heap={frame.heap} className="mt-8 border-t border-border pt-7" />
-      </div>
-      <div className="flex flex-col justify-center">
-        <HeapGrid frame={frame} cols={isMobile ? NARROW_COLS : WIDE_COLS} />
-        <Stats heap={frame.heap} className="mt-6 justify-between sm:justify-start xl:hidden" />
-      </div>
-    </figure>
+    <StageShell side={<TracePanel frame={frame} />} stats={stats}>
+      <HeapGrid frame={frame} cols={isMobile ? NARROW_COLS : WIDE_COLS} />
+    </StageShell>
   );
 };
 

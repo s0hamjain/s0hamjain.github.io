@@ -43,9 +43,9 @@ const SiteLayout = () => {
       <Hero />
 
       <div className="relative lg:flex">
-        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-20 lg:shrink-0 lg:items-center lg:justify-center xl:w-24">
+        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-44 lg:shrink-0 lg:items-center lg:justify-center xl:w-48">
           <nav aria-label="Primary">
-            <ul className="flex flex-col items-center gap-1 rounded-full border border-border bg-card/60 px-1.5 py-2.5 backdrop-blur">
+            <ul className="flex flex-col gap-0.5 rounded-2xl border border-border bg-card/60 p-1.5 backdrop-blur">
               {NAV_ITEMS.map(({ id, label }) => {
                 const isActive = active === id;
                 return (
@@ -56,24 +56,19 @@ const SiteLayout = () => {
                         e.preventDefault();
                         scrollToSection(id);
                       }}
-                      aria-label={label}
                       aria-current={isActive ? 'true' : undefined}
-                      className="group relative flex h-7 w-7 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className={cn(
+                        'group flex items-center gap-2.5 rounded-xl py-2 pl-3 pr-4 text-sm font-medium outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-ring',
+                        isActive ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground',
+                      )}
                     >
                       <span
                         className={cn(
-                          'w-1.5 rounded-full transition-all duration-300 ease-out',
-                          isActive
-                            ? 'h-4 bg-foreground'
-                            : 'h-1.5 bg-muted-foreground/60 group-hover:bg-foreground',
+                          'h-1.5 rounded-full transition-all duration-300 ease-out',
+                          isActive ? 'w-3 bg-foreground' : 'w-1.5 bg-muted-foreground/60 group-hover:bg-foreground',
                         )}
                       />
-                      <span
-                        className="pointer-events-none absolute left-full ml-3 -translate-x-1 whitespace-nowrap rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
-                        aria-hidden
-                      >
-                        {label}
-                      </span>
+                      {label}
                     </a>
                   </li>
                 );

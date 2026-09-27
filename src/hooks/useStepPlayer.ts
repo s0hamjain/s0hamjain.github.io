@@ -5,8 +5,9 @@ type Stepped<F extends Timed> = { frames: F[] };
 
 /**
  * Plays a list of steps, each a list of timed frames, on a loop.
- * Playback only runs while the returned ref is on screen, and never
- * auto-advances under prefers-reduced-motion (each step shows its final frame).
+ * Playback only runs while the returned ref is on screen and restarts from the first step each
+ * time it comes into view. It never auto-advances under prefers-reduced-motion (each step shows
+ * its final frame).
  */
 export function useStepPlayer<F extends Timed, S extends Stepped<F>>(steps: S[]) {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,7 +30,18 @@ export function useStepPlayer<F extends Timed, S extends Stepped<F>>(steps: S[])
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.35 });
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+        // Every arrival at the project starts the walkthrough over from step 1.
+        if (entry.isIntersecting) {
+          setStep(0);
+          setFrame(0);
+          setRun((r) => r + 1);
+        }
+      },
+      { threshold: 0.35 },
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
