@@ -19,12 +19,12 @@ export const startSmoothScroll = () => {
   };
 };
 
-export const smoothScrollTo = (target: HTMLElement | number) => {
+export const smoothScrollTo = (target: HTMLElement | number, duration = 1.2) => {
   if (lenis) {
     // Resolve elements against the real scroll position; Lenis's internal one can lag behind
     // scrolls it didn't drive (keyboard, scrollbar drag, programmatic jumps).
     const top = typeof target === 'number' ? target : target.getBoundingClientRect().top + window.scrollY;
-    lenis.scrollTo(top, { duration: 1.2 });
+    lenis.scrollTo(top, { duration });
   } else if (typeof target === 'number') {
     window.scrollTo({ top: target });
   } else {

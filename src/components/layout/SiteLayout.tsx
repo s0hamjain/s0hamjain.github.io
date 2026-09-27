@@ -43,9 +43,9 @@ const SiteLayout = () => {
       <Hero />
 
       <div className="relative lg:flex">
-        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-52 lg:shrink-0 lg:items-center lg:pl-10 xl:w-60 xl:pl-12">
+        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-20 lg:shrink-0 lg:items-center lg:justify-center xl:w-24">
           <nav aria-label="Primary">
-            <ul className="space-y-1">
+            <ul className="flex flex-col items-center gap-1 rounded-full border border-border bg-card/60 px-1.5 py-2.5 backdrop-blur">
               {NAV_ITEMS.map(({ id, label }) => {
                 const isActive = active === id;
                 return (
@@ -56,22 +56,21 @@ const SiteLayout = () => {
                         e.preventDefault();
                         scrollToSection(id);
                       }}
+                      aria-label={label}
                       aria-current={isActive ? 'true' : undefined}
-                      className="group flex items-center gap-3 py-2.5"
+                      className="group relative flex h-7 w-7 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span
                         className={cn(
-                          'h-px transition-all duration-300 ease-out',
+                          'w-1.5 rounded-full transition-all duration-300 ease-out',
                           isActive
-                            ? 'w-12 bg-foreground'
-                            : 'w-6 bg-muted-foreground/60 group-hover:w-12 group-hover:bg-foreground',
+                            ? 'h-4 bg-foreground'
+                            : 'h-1.5 bg-muted-foreground/60 group-hover:bg-foreground',
                         )}
                       />
                       <span
-                        className={cn(
-                          'text-sm font-medium transition-colors duration-300',
-                          isActive ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground',
-                        )}
+                        className="pointer-events-none absolute left-full ml-3 -translate-x-1 whitespace-nowrap rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                        aria-hidden
                       >
                         {label}
                       </span>

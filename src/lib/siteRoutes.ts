@@ -6,6 +6,7 @@ export const SECTION_IDS = ['home', 'projects', 'publications', 'contact'] as co
 export type SectionId = (typeof SECTION_IDS)[number];
 
 export const NAV_ITEMS: { id: SectionId; label: string }[] = [
+  { id: 'home', label: 'Home' },
   { id: 'projects', label: 'Projects' },
   { id: 'publications', label: 'Publications' },
   { id: 'contact', label: 'Contact' },

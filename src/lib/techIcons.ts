@@ -1,6 +1,7 @@
 import type { ComponentType, CSSProperties } from 'react';
 import { Dices, Eye, Sigma } from 'lucide-react';
 import { FaJava } from 'react-icons/fa';
+import { GrMysql } from 'react-icons/gr';
 import {
   SiAmazons3,
   SiAmazonwebservices,
@@ -31,6 +32,7 @@ import {
   SiReact,
   SiSpringboot,
   SiTypescript,
+  SiVuedotjs,
 } from 'react-icons/si';
 
 export type TechIcon = { icon: ComponentType<{ className?: string; style?: CSSProperties }>; color: string };
@@ -50,11 +52,13 @@ export const TECH_ICONS: Record<string, TechIcon> = {
   React: { icon: SiReact, color: '#61DAFB' },
   'Next.js': { icon: SiNextdotjs, color: '#FFFFFF' },
   'Node.js': { icon: SiNodedotjs, color: '#5FA04E' },
+  'Vue.js': { icon: SiVuedotjs, color: '#4FC08D' },
   Angular: { icon: SiAngular, color: '#DD0031' },
   FastAPI: { icon: SiFastapi, color: '#009688' },
   Flask: { icon: SiFlask, color: '#FFFFFF' },
   'Spring Boot': { icon: SiSpringboot, color: '#6DB33F' },
   PostgreSQL: { icon: SiPostgresql, color: '#4169E1' },
+  MySQL: { icon: GrMysql, color: '#5B9BD5' },
   MongoDB: { icon: SiMongodb, color: '#47A248' },
   Docker: { icon: SiDocker, color: '#2496ED' },
   AWS: { icon: SiAmazonwebservices, color: '#FF9900' },

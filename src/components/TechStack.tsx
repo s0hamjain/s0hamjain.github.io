@@ -13,16 +13,17 @@ const HERO_STACK = [
   'React',
   'Next.js',
   'Node.js',
+  'Vue.js',
   'Angular',
   'FastAPI',
   'Flask',
   'PostgreSQL',
+  'MySQL',
   'MongoDB',
   'Docker',
   'AWS',
   'Jenkins',
   'Nginx',
-  'Git',
   'Linux',
 ];
 
