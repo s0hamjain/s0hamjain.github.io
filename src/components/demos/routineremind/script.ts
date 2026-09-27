@@ -9,12 +9,12 @@
 
 export type Scene = 'build' | 'remind' | 'complete' | 'ask' | 'voice';
 
-export const TASKS: { time: string; title: string; hint: string; icon: 'sun' | 'drop' | 'food' | 'shoe' | 'lunch' }[] = [
-  { time: '7:30', title: 'Wake up', hint: 'Then brush your teeth', icon: 'sun' },
-  { time: '7:45', title: 'Brush teeth', hint: 'Then eat breakfast', icon: 'drop' },
-  { time: '8:00', title: 'Eat breakfast', hint: 'Then put on your shoes', icon: 'food' },
-  { time: '8:30', title: 'Put on shoes', hint: 'Then go to the bus', icon: 'shoe' },
-  { time: '12:00', title: 'Eat lunch', hint: 'Then quiet time', icon: 'lunch' },
+export const TASKS: { time: string; title: string; hint: string; icon: 'speech' | 'book' | 'swim' | 'home' | 'music' }[] = [
+  { time: '9:00', title: 'Speech therapy', hint: 'Then the library', icon: 'speech' },
+  { time: '10:30', title: 'Library visit', hint: 'Then swim class', icon: 'book' },
+  { time: '1:00', title: 'Swim class', hint: 'Then Grandma’s house', icon: 'swim' },
+  { time: '3:00', title: 'Visit Grandma', hint: 'Then piano', icon: 'home' },
+  { time: '5:00', title: 'Piano lesson', hint: 'Then quiet time', icon: 'music' },
 ];
 
 export type Frame = {
@@ -32,7 +32,7 @@ const f = (scene: Scene, sub: number, done: number, hold: number): Frame => ({ s
 export const STEPS: Step[] = [
   {
     title: 'Build a routine',
-    body: 'A parent builds the day in the web portal: a time, icon and transition hint for each task. The Spring Boot API verifies the request and saves it to Firestore.',
+    body: 'A parent plans the day in the web portal, with a time, icon and transition hint for each activity. The Spring Boot API verifies the request and saves it to Firestore.',
     frames: [f('build', 0, 0, 1100), f('build', 1, 0, 1100), f('build', 2, 0, 1300), f('build', 3, 0, 1400)],
   },
   {

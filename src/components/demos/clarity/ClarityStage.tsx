@@ -46,6 +46,8 @@ const EXPLANATION = [
 ];
 
 const ARRAY = [2, 5, 8, 11, 14, 17, 20, 23];
+/** Clarity's single accent. */
+const ACCENT = '#7AA2F7';
 
 /* ---------- small building blocks ---------- */
 
@@ -55,22 +57,27 @@ const Window = ({
   style,
   children,
   right,
+  accent = ACCENT,
 }: {
   title: string;
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
   right?: ReactNode;
+  /** Colour identifying what this window is (editor, Claude, Clarity…). */
+  accent?: string;
 }) => (
   <div
-    className={cn('absolute overflow-hidden rounded-xl border border-white/10 bg-[#15181f] shadow-2xl shadow-black/60', className)}
-    style={style}
+    className={cn('absolute overflow-hidden rounded-xl border bg-[#141821] shadow-2xl shadow-black/60', className)}
+    style={{ borderColor: `${accent}40`, ...style }}
   >
-    <div className="flex h-7 items-center gap-1.5 border-b border-white/5 bg-white/[0.03] px-3">
+    <div className="flex h-7 items-center gap-1.5 border-b px-3" style={{ background: `${accent}14`, borderColor: `${accent}26` }}>
       <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
       <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
       <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
-      <span className="ml-2 font-mono text-[11px] text-white/50">{title}</span>
+      <span className="ml-2 font-mono text-[11px]" style={{ color: accent }}>
+        {title}
+      </span>
       <span className="ml-auto">{right}</span>
     </div>
     {children}
@@ -161,15 +168,15 @@ const AskScene = ({ sub }: { sub: number }) => (
           {EDITOR_CODE.join('\n')}
         </span>
       </span>
-      <Search className="h-4 w-4 shrink-0 text-white/40" />
-      <Typewriter text="Help me visualize how this program runs so I can debug it" speed={32} caret className="whitespace-nowrap text-[12.5px] text-white" />
+      <Search className="h-4 w-4 shrink-0 text-white/80" />
+      <Typewriter text="Help me visualize this program to debug it" speed={32} caret className="whitespace-nowrap text-[12.5px] text-white" />
       <span className="ml-auto flex items-center gap-1.5">
-        <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[10px] text-white/60">Tutor</span>
+        <span className="rounded-md bg-white/10 px-1.5 py-0.5 text-[10px] text-white/80">Tutor</span>
         <span className="rounded-md bg-primary/30 px-1.5 py-0.5 text-[10px] text-white">Answer</span>
         <Key k="↵" pressed={sub >= 1} />
       </span>
     </div>
-    <p className="demo-fade absolute text-[11px] text-white/40" style={{ left: 44, top: 184, animationDelay: '600ms' }}>
+    <p className="demo-fade absolute text-[11px] text-white/80" style={{ left: 44, top: 184, animationDelay: '600ms' }}>
       ↓ reuse a recent screenshot
     </p>
   </>
@@ -195,7 +202,7 @@ const ExplainScene = ({ sub }: { sub: number }) => (
       sub={sub}
       status={
         sub === 0 ? (
-          <span className="flex items-center gap-1 text-[10px] text-white/60">
+          <span className="flex items-center gap-1 text-[10px] text-white/80">
             <Loader2 className="demo-spin h-3 w-3" /> writing explanation…
           </span>
         ) : (
@@ -212,7 +219,10 @@ const ExplainScene = ({ sub }: { sub: number }) => (
             ))
           : EXPLANATION.map((line, i) => (
               <p key={i} className="demo-rise flex gap-2.5 text-[12.5px] leading-[18px] text-white/85" style={{ animationDelay: `${i * 450}ms` }}>
-                <span className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-primary/25 text-[10px] text-white">
+                <span
+                  className="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-black"
+                  style={{ background: ACCENT }}
+                >
                   {i + 1}
                 </span>
                 <span>{line.replace(/`/g, '')}</span>
@@ -220,12 +230,12 @@ const ExplainScene = ({ sub }: { sub: number }) => (
             ))}
       </div>
       <div className="absolute inset-x-4 bottom-4 flex h-12 items-center gap-3 rounded-lg border border-white/10 bg-black/30 px-3">
-        <Play className="h-4 w-4 text-white/40" />
+        <Play className="h-4 w-4 text-white/80" />
         <div className="demo-shimmer h-2 flex-1 rounded-full bg-white/[0.06]" />
-        <span className="text-[10px] text-white/45">video on the way</span>
+        <span className="text-[10px] text-white/70">video on the way</span>
       </div>
       {sub >= 2 && (
-        <span className="demo-pop absolute bottom-[72px] right-4 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/60">
+        <span className="demo-pop absolute bottom-[72px] right-4 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-white/80">
           Explainer: critique passed ✓
         </span>
       )}
@@ -256,18 +266,18 @@ const GenerateScene = ({ sub }: { sub: number }) => {
       {/* Gemini's read of the problem */}
       <div
         className={cn(
-          'demo-rise absolute rounded-xl border bg-[#15181f] p-3 transition-all duration-500',
-          sub === 0 ? 'border-sky-400/60 shadow-[0_0_24px_rgba(56,189,248,0.25)]' : 'border-white/10',
+          'demo-rise absolute rounded-xl border bg-[#131a2b] p-3 transition-all duration-500',
+          sub === 0 ? 'border-[#7AA2F7]' : 'border-white/10',
         )}
         style={{ left: 14, top: 10, width: 236, height: 118 }}
       >
         <p className="mb-2 flex items-center justify-between text-[10px]">
-          <span className="font-medium text-sky-300">Gemini · problem context</span>
-          <span className="text-white/40">from screenshot</span>
+          <span className="font-medium text-[#7AA2F7]">Gemini · problem context</span>
+          <span className="text-white/80">from screenshot</span>
         </p>
         {CONTEXT.map(([k, v], i) => (
           <p key={k} className="demo-rise flex justify-between font-mono text-[10.5px] leading-[19px]" style={{ animationDelay: `${150 + i * 170}ms` }}>
-            <span className="text-white/45">{k}</span>
+            <span className="text-white/70">{k}</span>
             <span className="text-white/90">{v}</span>
           </p>
         ))}
@@ -276,19 +286,19 @@ const GenerateScene = ({ sub }: { sub: number }) => {
       {/* Manim docs retrieved from MongoDB Atlas */}
       <div
         className={cn(
-          'absolute rounded-xl border bg-[#15181f] p-3 transition-all duration-500',
-          sub === 1 ? 'border-emerald-400/60 shadow-[0_0_24px_rgba(52,211,153,0.25)]' : 'border-white/10',
+          'absolute rounded-xl border bg-[#131a2b] p-3 transition-all duration-500',
+          sub === 1 ? 'border-[#7AA2F7]' : 'border-white/10',
           sub < 1 && 'opacity-40',
         )}
         style={{ left: 14, top: 138, width: 236, height: 156 }}
       >
         <p className="mb-1.5 flex items-center justify-between text-[10px]">
-          <span className="font-medium text-emerald-300">MongoDB Atlas · Manim docs</span>
+          <span className="font-medium text-[#7AA2F7]">MongoDB Atlas · Manim docs</span>
           {sub === 1 && <Loader2 className="demo-spin h-3 w-3 text-emerald-300" />}
         </p>
         {sub >= 1 ? (
           <>
-            <p className="demo-fade mb-1.5 truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[9.5px] text-white/60">
+            <p className="demo-fade mb-1.5 truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[9.5px] text-white/80">
               vector search: “array cells + pointer arrow”
             </p>
             {DOCS.map(([name, doc, score], i) => (
@@ -298,7 +308,7 @@ const GenerateScene = ({ sub }: { sub: number }) => {
                 style={{ animationDelay: `${400 + i * 260}ms` }}
               >
                 <span className="w-12 shrink-0 text-[#FFCB6B]">{name}</span>
-                <span className="min-w-0 flex-1 truncate text-white/50">{doc}</span>
+                <span className="min-w-0 flex-1 truncate text-white/70">{doc}</span>
                 <span className="text-emerald-300">{score}</span>
               </div>
             ))}
@@ -361,8 +371,8 @@ const GenerateScene = ({ sub }: { sub: number }) => {
             ))}
           </div>
         )}
-        <div className="absolute inset-x-3 bottom-2.5 rounded-lg border border-white/10 bg-black/40 px-2.5 py-1.5">
-          <p className="mb-1 flex items-center justify-between font-mono text-[9.5px] text-white/50">
+        <div className="absolute inset-x-3 bottom-2.5 rounded-lg border border-white/10 bg-black/30 px-2.5 py-1.5">
+          <p className="mb-1 flex items-center justify-between font-mono text-[9.5px] text-white/70">
             <span>Docker sandbox · no network</span>
             {sub === 3 && <span className="text-amber-300">↺ Claude repairs line {BUGGY_LINE + 1}</span>}
           </p>
@@ -417,8 +427,9 @@ const WatchScene = ({ sub }: { sub: number }) => {
     </span>
   );
   return (
-    <>
-      <Window title="Clarity" style={{ left: 60, top: 12, width: 520, height: 282 }} right={<span className="text-[10px] text-white/50">Explanation · <span className="text-white">Video</span></span>}>
+    // The video player keeps its real dark look inside the light app.
+    <div className="absolute inset-0">
+      <Window title="Clarity" style={{ left: 60, top: 12, width: 520, height: 282 }} right={<span className="text-[10px] text-white/70">Explanation · <span className="text-white">Video</span></span>}>
         <div className="absolute inset-x-3 bottom-3 top-10 rounded-lg bg-black" />
         <p className="demo-fade absolute font-mono text-[12px] text-white/70" style={{ left: 30, top: 50 }}>
           target = 17
@@ -434,7 +445,7 @@ const WatchScene = ({ sub }: { sub: number }) => {
           <div className="h-1 flex-1 rounded-full bg-white/15">
             <div className="h-full rounded-full bg-white transition-[width] duration-1000 ease-linear" style={{ width: `${(sub + 1) * 20}%` }} />
           </div>
-          <span className="font-mono text-[10px] text-white/60">0:{String(4 + sub * 3).padStart(2, '0')} / 0:18</span>
+          <span className="font-mono text-[10px] text-white/80">0:{String(4 + sub * 3).padStart(2, '0')} / 0:18</span>
         </div>
       </Window>
       {ARRAY.map((v, i) => {
@@ -461,7 +472,7 @@ const WatchScene = ({ sub }: { sub: number }) => {
       {pointer(lo, 'lo', '#7DD3FC', 196)}
       {pointer(hi, 'hi', '#F9A8D4', 196)}
       {mid >= 0 && pointer(mid, 'mid', '#FCD34D', 100)}
-    </>
+    </div>
   );
 };
 
@@ -480,8 +491,13 @@ const ClarityStage = ({ frame }: { frame: Frame }) => {
   return (
     <StageShell>
       <ScaledCanvas width={W} height={H}>
-        <div className="absolute inset-0 overflow-hidden rounded-xl border border-white/10 bg-[#0d0f14]">
-          <div className="flex h-5 items-center justify-end gap-3 bg-white/[0.04] px-3 text-[10px] text-white/50">
+        <div className="absolute inset-0 overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(165deg,#3b4a66_0%,#232a3b_45%,#16181f_100%)] [font-family:'IBM_Plex_Sans',sans-serif] [&_.font-mono]:[font-family:'IBM_Plex_Mono',monospace]">
+          <div className="flex h-5 items-center gap-3 bg-black/35 px-3 text-[10px] text-white/85 backdrop-blur">
+            <span className="font-semibold">Code</span>
+            <span className="text-white/70">File</span>
+            <span className="text-white/70">Edit</span>
+            <span className="text-white/70">View</span>
+            <span className="flex-1" />
             <span className={cn('flex items-center gap-1 transition-colors', frame.status >= 0 && frame.status < 6 && 'text-primary')}>
               <Search className="h-3 w-3" /> Clarity
             </span>

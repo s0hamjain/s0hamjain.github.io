@@ -1,524 +1,385 @@
 import {
-  AudioLines,
+  BatteryFull,
   Bell,
-  Bot,
+  CalendarDays,
   Check,
-  Cloud,
-  Cpu,
-  Database,
-  Droplets,
-  Footprints,
+  BookOpen,
+  House,
+  MessagesSquare,
+  Music,
+  Waves,
+  Menu,
+  MessageCircle,
   Mic,
   Plus,
-  Sandwich,
-  Sparkles,
-  Sun,
-  Utensils,
+  UserRound,
+  Wifi,
 } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { Packet, ScaledCanvas, StageShell, Typewriter } from '../shared';
+import { ScaledCanvas, StageShell, Typewriter } from '../shared';
 import { TASKS } from './script';
 import type { Frame } from './script';
 
 const W = 640;
 const H = 320;
 
-const ICONS = { sun: Sun, drop: Droplets, food: Utensils, shoe: Footprints, lunch: Sandwich };
-const ICON_BG = { sun: '#FCD34D', drop: '#7DD3FC', food: '#FDBA74', shoe: '#C4B5FD', lunch: '#86EFAC' };
-
-/* ---------- layout: where each piece sits in each beat ---------- */
-
-type Rect = { l: number; t: number; w: number; h: number };
-type NodeId = 'api' | 'db' | 'fcm' | 'ai' | 'cpp' | 'stt';
-
-const NODE_INFO: Record<NodeId, { label: string; icon: typeof Cloud }> = {
-  api: { label: 'Spring Boot API', icon: Cloud },
-  db: { label: 'Firestore', icon: Database },
-  fcm: { label: 'FCM push', icon: Bell },
-  ai: { label: 'Gemini', icon: Sparkles },
-  cpp: { label: 'C++ audio', icon: Cpu },
-  stt: { label: 'Speech-to-Text', icon: AudioLines },
-};
-/** Where a node rests when it isn't part of the current beat (it fades out there). */
-const NODE_HOME: Record<NodeId, [number, number]> = {
-  api: [385, 110],
-  db: [385, 210],
-  fcm: [190, 150],
-  ai: [385, 210],
-  cpp: [290, 70],
-  stt: [290, 160],
+/** Material 3 light palette (baseline purple). */
+const M3 = {
+  primary: '#6750A4',
+  onPrimary: '#FFFFFF',
+  primaryContainer: '#EADDFF',
+  onPrimaryContainer: '#21005D',
+  surface: '#FEF7FF',
+  surfaceContainer: '#F3EDF7',
+  surfaceContainerHigh: '#ECE6F0',
+  onSurface: '#1D1B20',
+  onSurfaceVariant: '#49454F',
 };
 
-const PHONE_W = 156;
-const PHONE_H = 300;
-
-type Layout = {
-  portal: Rect | null;
-  /** Phone's left edge, or null when off stage. */
-  phone: number | null;
-  nodes: Partial<Record<NodeId, [number, number]>>;
-  active: NodeId[];
-};
-
-function layoutFor({ scene, sub }: Frame): Layout {
-  switch (scene) {
-    case 'build':
-      return sub < 3
-        ? { portal: { l: 50, t: 14, w: 320, h: 292 }, phone: null, nodes: { api: [500, 110], db: [500, 210] }, active: sub === 2 ? ['api', 'db'] : [] }
-        : { portal: { l: 14, t: 14, w: 290, h: 292 }, phone: 470, nodes: { api: [385, 110], db: [385, 210] }, active: ['db'] };
-    case 'remind':
-      return { portal: null, phone: 330, nodes: { fcm: [190, 150] }, active: sub === 1 ? ['fcm'] : [] };
-    case 'complete':
-      return { portal: { l: 300, t: 14, w: 320, h: 292 }, phone: 60, nodes: {}, active: [] };
-    case 'ask':
-      return {
-        portal: { l: 14, t: 14, w: 290, h: 292 },
-        phone: 470,
-        nodes: { api: [385, 110], ai: [385, 210] },
-        active: sub === 1 ? ['api'] : sub >= 2 ? ['api', 'ai'] : [],
-      };
-    case 'voice':
-      return {
-        portal: sub >= 3 ? { l: 380, t: 14, w: 246, h: 292 } : null,
-        phone: 40,
-        nodes: sub >= 3 ? { ai: [290, 160] } : { cpp: [290, 70], stt: [290, 160], ai: [290, 250] },
-        active: sub === 1 ? ['cpp', 'stt'] : sub === 2 ? ['ai'] : [],
-      };
-  }
-}
-
-/** A point on the phone's left or right edge, for packets. */
-const phoneEdge = (l: number, side: 'left' | 'right', y = 150): [number, number] => [side === 'left' ? l : l + PHONE_W, y];
-
-/* ---------- small pieces ---------- */
+const ICONS = { speech: MessagesSquare, book: BookOpen, swim: Waves, home: House, music: Music };
+const ICON_TINT = { speech: '#7C3AED', book: '#EA580C', swim: '#0EA5E9', home: '#16A34A', music: '#DB2777' };
 
 const TaskIcon = ({ icon, size = 'sm' }: { icon: keyof typeof ICONS; size?: 'sm' | 'lg' }) => {
   const Icon = ICONS[icon];
   return (
     <span
-      className={cn('flex shrink-0 items-center justify-center rounded-xl', size === 'lg' ? 'h-16 w-16' : 'h-7 w-7')}
-      style={{ background: `${ICON_BG[icon]}33` }}
+      className={cn('flex shrink-0 items-center justify-center', size === 'lg' ? 'h-16 w-16 rounded-3xl' : 'h-7 w-7 rounded-xl')}
+      style={{ background: `${ICON_TINT[icon]}1f` }}
     >
-      <Icon className={size === 'lg' ? 'h-9 w-9' : 'h-4 w-4'} style={{ color: ICON_BG[icon] }} />
+      <Icon className={size === 'lg' ? 'h-9 w-9' : 'h-4 w-4'} style={{ color: ICON_TINT[icon] }} />
     </span>
   );
 };
 
-const CardList = ({ done, stagger }: { done: number; stagger?: boolean }) => (
-  <div className="space-y-1.5 px-2.5 pt-2">
-    {TASKS.map((t, i) => (
-      <div
-        key={t.title}
-        className={cn(
-          'flex items-center gap-2 rounded-xl border px-2 py-1.5 transition-all duration-500',
-          stagger && 'demo-rise',
-          i < done ? 'border-emerald-400/30 bg-emerald-400/5' : i === done ? 'border-primary/60 bg-primary/10' : 'border-white/5 bg-white/[0.03]',
-        )}
-        style={stagger ? { animationDelay: `${i * 140}ms` } : undefined}
-      >
-        <TaskIcon icon={t.icon} />
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[10.5px] text-white">{t.title}</span>
-          <span className="block text-[9px] text-white/45">{t.time}</span>
-        </span>
-      </div>
-    ))}
-  </div>
-);
+/* ---------- chat content shared by the phone and the parent's history ---------- */
 
-const TodayList = ({ done, pulse }: { done: number; pulse?: number }) => (
-  <div className="space-y-1 px-3 pt-2">
-    {TASKS.map((t, i) => (
-      <div
-        key={t.title}
-        className={cn(
-          'flex items-center gap-2 rounded-lg px-2 py-1.5 text-[10.5px] transition-colors duration-500',
-          i === pulse ? 'bg-emerald-400/15' : 'bg-white/[0.03]',
-        )}
-      >
-        <span className="w-9 font-mono text-[9.5px] text-white/45">{t.time}</span>
-        <TaskIcon icon={t.icon} />
-        <span className={cn('flex-1', i < done ? 'text-white/45 line-through' : 'text-white/85')}>{t.title}</span>
-        {i < done ? <Check className="demo-pop h-3.5 w-3.5 text-emerald-400" /> : <span className="h-1.5 w-1.5 rounded-full bg-white/20" />}
-      </div>
-    ))}
-  </div>
-);
+type Msg = { who: 'kid' | 'bot'; text: string };
 
-type Bubble = { who: 'kid' | 'bot'; text: string; tag?: string };
+function chatFor({ scene, sub }: Frame): Msg[] {
+  const msgs: Msg[] = [];
+  if (scene === 'ask' || scene === 'voice') {
+    msgs.push({ who: 'kid', text: 'What next?' });
+    if (scene === 'voice' || sub >= 1) msgs.push({ who: 'bot', text: 'Swim class at 1:00.' });
+    if (scene === 'voice' || sub >= 2) msgs.push({ who: 'kid', text: 'Who is my swim coach?' });
+    if (scene === 'voice' || sub >= 3) msgs.push({ who: 'bot', text: 'Coach Maria!' });
+  }
+  if (scene === 'voice' && sub >= 1) msgs.push({ who: 'kid', text: 'When do I see Grandma?' });
+  if (scene === 'voice' && sub >= 2) msgs.push({ who: 'bot', text: 'At 3:00, after swim.' });
+  return msgs;
+}
 
-const Chat = ({ bubbles, typing }: { bubbles: Bubble[]; typing?: boolean }) => (
-  <div className="flex flex-col gap-1.5 px-2.5 pt-2">
-    {bubbles.map((b, i) => (
-      <div
-        key={i}
-        className={cn(
-          'demo-rise max-w-[88%] rounded-2xl px-2.5 py-1.5 text-[10px] leading-[14px]',
-          b.who === 'kid' ? 'self-end rounded-br-sm bg-primary text-black' : 'self-start rounded-bl-sm bg-white/10 text-white',
-        )}
-      >
-        {b.text}
-        {b.tag && <span className="mt-0.5 block text-[8.5px] text-white/45">{b.tag}</span>}
-      </div>
-    ))}
-    {typing && (
-      <div className="demo-rise flex gap-1 self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="demo-pulse h-1.5 w-1.5 rounded-full bg-white/70" style={{ animationDelay: `${i * 180}ms` }} />
-        ))}
-      </div>
+/* ---------- parent web portal (Angular) ---------- */
+
+const PortalTask = ({ t, done, now }: { t: (typeof TASKS)[number]; done?: boolean; now?: boolean }) => (
+  <div
+    className="flex items-center gap-2.5 rounded-xl border px-2.5 py-[3px] text-[11px]"
+    style={{ borderColor: now ? M3.primary : '#E7E0EC', background: now ? M3.primaryContainer : '#FFFFFF' }}
+  >
+    <span className="w-9 text-[10px] tabular-nums" style={{ color: M3.onSurfaceVariant }}>
+      {t.time}
+    </span>
+    <TaskIcon icon={t.icon} />
+    <span className={cn('flex-1 font-semibold', done && 'line-through opacity-50')} style={{ color: M3.onSurface }}>
+      {t.title}
+    </span>
+    {done && <Check className="demo-pop h-3.5 w-3.5 text-emerald-600" />}
+    {now && (
+      <span className="rounded-full px-1.5 text-[9px] font-bold" style={{ background: M3.primary, color: M3.onPrimary }}>
+        NOW
+      </span>
     )}
   </div>
 );
 
-const QUICK = ['What now?', 'What next?', 'When do I eat?', 'I need help'];
-const NOISY = Array.from({ length: 22 }, (_, i) => 20 + ((i * 53) % 70));
-const CLEAN = Array.from({ length: 22 }, (_, i) => 30 + 55 * Math.abs(Math.sin(i * 0.55)));
-
-/* ---------- per-beat content for the portal and the phone ---------- */
-
-function portalContent({ scene, sub, done }: Frame): { title: string; body: ReactNode } {
-  switch (scene) {
-    case 'build': {
-      const rows = [1, 3, 5, 5][sub];
-      return {
-        title: 'Ava’s routine',
-        body: (
-          <>
-            <div className="mx-3 mt-1.5 flex items-center justify-between">
-              <span className={cn('flex items-center gap-1 text-[10.5px] text-white/60', sub < 2 && 'demo-pulse')}>
+function portalView(frame: Frame): { tab: string; body: ReactNode } {
+  const { scene, sub, done } = frame;
+  if (scene === 'build') {
+    const rows = [1, 3, 5, 5][sub];
+    return {
+      tab: 'Routine',
+      body: (
+        <>
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-[13px] font-extrabold" style={{ color: M3.onSurface }}>
+              Ava’s Saturday
+            </p>
+            <span
+              className="rounded-full px-3 py-1 text-[10px] font-bold transition-colors duration-300"
+              style={sub >= 2 ? { background: '#DCFCE7', color: '#166534' } : { background: M3.primary, color: M3.onPrimary }}
+            >
+              {sub >= 2 ? 'Saved ✓' : 'Save'}
+            </span>
+          </div>
+          <div className="space-y-1">
+            {TASKS.slice(0, rows).map((t) => (
+              <div key={t.title} className="demo-fade">
+                <PortalTask t={t} />
+              </div>
+            ))}
+            {rows < 5 && (
+              <p className="flex items-center gap-1 pl-1 text-[10.5px] font-semibold" style={{ color: M3.primary }}>
                 <Plus className="h-3.5 w-3.5" /> Add task
-              </span>
-              <span
-                className={cn(
-                  'rounded-lg px-3 py-1 text-[10.5px] font-medium transition-all',
-                  sub >= 2 ? 'scale-95 bg-emerald-500 text-black' : 'bg-white text-black',
-                )}
-              >
-                {sub >= 2 ? 'Saved ✓' : 'Save routine'}
-              </span>
-            </div>
-            <div className="space-y-0.5 px-3 pt-1.5">
-              {TASKS.slice(0, rows).map((t, i) => (
-                <div
-                  key={t.title}
-                  className="demo-rise flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2 py-[3px]"
-                  style={{ animationDelay: `${(i % 2) * 180}ms` }}
-                >
-                  <span className="w-8 font-mono text-[9.5px] text-white/50">{t.time}</span>
-                  <TaskIcon icon={t.icon} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[10.5px] text-white">{t.title}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </>
-        ),
-      };
-    }
-    case 'complete':
-      return { title: 'Today', body: <TodayList done={done} pulse={sub >= 1 ? done - 1 : undefined} /> };
-    case 'ask':
-      return {
-        title: 'Parent note',
-        body: (
-          <>
-            <div className="mx-3 mt-2 rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
-              <p
-                className={cn(
-                  'mt-1 text-[11px] text-white/85 transition-colors duration-500',
-                  sub >= 3 && 'rounded bg-amber-300/15 text-amber-100',
-                )}
-              >
-                Pancakes for breakfast
               </p>
-            </div>
-            <div className="mx-3 mt-3 space-y-1.5 text-[10.5px]">
-              <p className={cn('rounded-lg border px-2.5 py-1.5 transition-colors', sub === 1 ? 'border-emerald-400/50 text-emerald-200' : 'border-white/10 text-white/60')}>
-                Now / next → rules
+            )}
+          </div>
+        </>
+      ),
+    };
+  }
+  if (scene === 'remind' || scene === 'complete') {
+    const now = scene === 'remind' ? (sub >= 1 ? 0 : -1) : done;
+    return {
+      tab: 'Today',
+      body: (
+        <>
+          <p className="mb-1.5 text-[13px] font-extrabold" style={{ color: M3.onSurface }}>
+            Today · {done}/{TASKS.length} done
+          </p>
+          <div className="space-y-[3px]">
+            {TASKS.map((t, i) => (
+              <PortalTask key={t.title} t={t} done={i < done} now={i === now} />
+            ))}
+          </div>
+        </>
+      ),
+    };
+  }
+  const msgs = chatFor(frame);
+  return {
+    tab: 'Chat',
+    body: (
+      <>
+        <div className="mb-2 rounded-xl px-2.5 py-1.5 text-[10.5px]" style={{ background: '#FFF4D6', color: '#6B4E00' }}>
+          <span className="font-bold">Note for the chatbot:</span> Coach Maria teaches swim today
+        </div>
+        <p className="mb-1.5 text-[13px] font-extrabold" style={{ color: M3.onSurface }}>
+          Ava’s questions
+        </p>
+        <div className="space-y-1">
+          {msgs.map((m, i) =>
+            m.who === 'kid' ? (
+              <p key={i} className="demo-fade text-[11px] font-semibold" style={{ color: M3.onSurface }}>
+                “{m.text}”
               </p>
-              <p className={cn('rounded-lg border px-2.5 py-1.5 transition-colors', sub >= 2 ? 'border-primary/60 text-white' : 'border-white/10 text-white/60')}>
-                Anything else → Gemini
+            ) : (
+              <p key={i} className="demo-fade -mt-0.5 pl-3 text-[10.5px]" style={{ color: M3.onSurfaceVariant }}>
+                → {m.text}
               </p>
-            </div>
-          </>
-        ),
-      };
-    default:
-      return {
-        title: 'Chat history',
-        body: (
+            ),
+          )}
+          {msgs.length === 0 && (
+            <p className="text-[10.5px]" style={{ color: M3.onSurfaceVariant }}>
+              No questions yet
+            </p>
+          )}
+        </div>
+      </>
+    ),
+  };
+}
+
+const Portal = ({ frame }: { frame: Frame }) => {
+  const view = portalView(frame);
+  return (
+    <div className="absolute overflow-hidden rounded-xl bg-white shadow-xl shadow-black/15" style={{ left: 16, top: 14, width: 350, height: 292 }}>
+      {/* browser chrome */}
+      <div className="flex h-7 items-center gap-1.5 bg-[#DEE1E6] px-2.5">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
+        <span className="ml-2 flex-1 rounded-full bg-white px-2.5 py-0.5 text-[9.5px] text-[#5F6368]">routineremind.app/parent</span>
+      </div>
+      {/* app bar */}
+      <div className="flex h-9 items-center gap-2 px-3" style={{ background: M3.primary, color: M3.onPrimary }}>
+        <Menu className="h-4 w-4" />
+        <span className="text-[12.5px] font-extrabold">RoutineRemind</span>
+        <span className="ml-auto flex gap-1 text-[10px] font-semibold">
+          {['Routine', 'Today', 'Chat'].map((t) => (
+            <span key={t} className={cn('rounded-full px-2 py-0.5 transition-colors', t === view.tab ? 'bg-white/25' : 'opacity-70')}>
+              {t}
+            </span>
+          ))}
+        </span>
+      </div>
+      <div className="px-3 pt-2.5" style={{ background: M3.surface, height: 292 - 28 - 36 }}>
+        {view.body}
+      </div>
+    </div>
+  );
+};
+
+/* ---------- child's Android phone (Kotlin + Compose, Material 3) ---------- */
+
+function phoneView(frame: Frame): { time: string; body: ReactNode; tab: 'today' | 'ask' } {
+  const { scene, sub, done } = frame;
+  if (scene === 'build') {
+    return {
+      time: '8:40',
+      tab: 'today',
+      body:
+        sub >= 3 ? (
           <div className="space-y-1.5 px-3 pt-2">
-            {[
-              ['What next?', 'Eat breakfast at 8:00.'],
-              ['What’s for breakfast?', 'Pancakes!'],
-              ['When do I eat lunch?', 'Lunch is at 12:00.'],
-            ].map(([q, a], i) => (
-              <div key={q} className="demo-rise rounded-lg bg-white/[0.04] p-2" style={{ animationDelay: `${300 + i * 220}ms` }}>
-                <p className="text-[10.5px] text-white">“{q}”</p>
-                <p className="mt-0.5 text-[10px] text-white/55">→ {a}</p>
+            {TASKS.slice(0, 4).map((t) => (
+              <div key={t.title} className="demo-fade flex items-center gap-2 rounded-2xl px-2 py-1.5" style={{ background: M3.surfaceContainer }}>
+                <TaskIcon icon={t.icon} />
+                <span className="text-[11px] font-bold" style={{ color: M3.onSurface }}>
+                  {t.title}
+                </span>
               </div>
             ))}
           </div>
+        ) : (
+          <p className="mt-24 text-center text-[11px]" style={{ color: M3.onSurfaceVariant }}>
+            No routine yet
+          </p>
         ),
-      };
+    };
   }
-}
-
-function phoneContent({ scene, sub, done }: Frame): { time: string; body: ReactNode } {
-  switch (scene) {
-    case 'build':
-      return { time: '7:29', body: sub >= 3 ? <CardList done={0} stagger /> : null };
-    case 'remind':
-      return {
-        time: sub === 0 ? '7:29' : '7:30',
-        body: (
-          <>
-            {sub < 2 ? (
-              <CardList done={0} />
-            ) : (
-              <div className="demo-pop flex flex-col items-center px-3 pt-6 text-center">
-                <span className="mb-3 rounded-full bg-primary/20 px-2 py-0.5 text-[9px] font-semibold tracking-wider text-primary">NOW · 7:30</span>
-                <TaskIcon icon="sun" size="lg" />
-                <p className="mt-3 text-[15px] font-semibold text-white">Wake up</p>
-              </div>
-            )}
-            {sub >= 1 && (
-              <div
-                className={cn(
-                  'demo-drop absolute inset-x-2 top-7 rounded-2xl border border-white/10 bg-[#252833]/95 p-2 shadow-xl transition-all duration-500',
-                  sub === 2 && '-translate-y-24 opacity-0',
-                )}
-              >
-                <p className="flex items-center gap-1.5 text-[9px] text-white/55">
-                  <Bell className="h-3 w-3" /> RoutineRemind · now
-                </p>
-                <p className="mt-0.5 text-[10.5px] text-white">Time to wake up! ☀️</p>
-              </div>
-            )}
-          </>
-        ),
-      };
-    case 'complete': {
-      const current = TASKS[done];
-      const prev = TASKS[done - 1];
-      return {
-        time: ['7:31', '7:44', '7:58'][sub],
-        body: (
-          <>
-            <div key={done} className="demo-rise flex flex-col items-center px-3 pt-4 text-center">
-              <span className="mb-2 rounded-full bg-primary/20 px-2 py-0.5 text-[9px] font-semibold tracking-wider text-primary">
+  if (scene === 'remind' || scene === 'complete') {
+    const current = scene === 'remind' ? TASKS[0] : TASKS[done];
+    const showCard = scene === 'complete' || sub >= 1;
+    return {
+      time: scene === 'remind' ? (sub === 0 ? '8:59' : '9:00') : ['9:02', '10:28', '12:40'][sub],
+      tab: 'today',
+      body: (
+        <>
+          {scene === 'remind' && sub === 1 && (
+            <div className="demo-drop absolute inset-x-2 top-7 z-10 rounded-2xl p-2 shadow-lg" style={{ background: M3.surfaceContainerHigh }}>
+              <p className="flex items-center gap-1.5 text-[9px]" style={{ color: M3.onSurfaceVariant }}>
+                <Bell className="h-3 w-3" /> RoutineRemind · now
+              </p>
+              <p className="text-[11px] font-bold" style={{ color: M3.onSurface }}>
+                Time for speech therapy!
+              </p>
+            </div>
+          )}
+          {showCard ? (
+            <div key={current.title} className="demo-fade flex flex-col items-center px-3 pt-2 text-center">
+              <span className="mb-2 rounded-full px-2.5 py-0.5 text-[9px] font-bold" style={{ background: M3.primaryContainer, color: M3.onPrimaryContainer }}>
                 NOW · {current.time}
               </span>
               <TaskIcon icon={current.icon} size="lg" />
-              <p className="mt-2 text-[14px] font-semibold text-white">{current.title}</p>
-              {prev && <p className="demo-pop mt-2 rounded-full bg-amber-300/15 px-2.5 py-1 text-[10px] text-amber-200">{prev.hint}</p>}
-            </div>
-            <div className="absolute inset-x-3 bottom-4">
-              <div className="mb-3 flex justify-center gap-1">
-                {TASKS.map((t, i) => (
-                  <span
-                    key={t.title}
-                    className={cn('h-1.5 w-5 rounded-full transition-colors duration-500', i < done ? 'bg-emerald-400' : 'bg-white/15')}
-                  />
-                ))}
-              </div>
-              <span className="relative flex h-10 items-center justify-center overflow-hidden rounded-2xl bg-emerald-500 text-[13px] font-semibold text-black">
-                {sub === 0 && <span className="demo-ripple absolute h-10 w-10 rounded-full bg-white" />}
-                Done
-              </span>
-            </div>
-          </>
-        ),
-      };
-    }
-    case 'ask': {
-      const bubbles: Bubble[] = [{ who: 'kid', text: 'What next?' }];
-      if (sub >= 1) bubbles.push({ who: 'bot', text: 'Eat breakfast at 8:00.', tag: 'rules' });
-      if (sub >= 2) bubbles.push({ who: 'kid', text: 'What’s for breakfast?' });
-      if (sub >= 3) bubbles.push({ who: 'bot', text: 'Pancakes!', tag: 'Gemini' });
-      return {
-        time: '7:59',
-        body: (
-          <>
-            <Chat bubbles={bubbles} typing={sub === 2} />
-            <div
-              className={cn(
-                'absolute inset-x-2 bottom-3 grid grid-cols-2 gap-1 transition-all duration-500',
-                sub >= 1 && 'translate-y-4 opacity-0',
-              )}
-            >
-              {QUICK.map((q) => (
-                <span
-                  key={q}
-                  className={cn(
-                    'relative overflow-hidden rounded-lg border px-1.5 py-1 text-center text-[9px] transition-colors',
-                    q === 'What next?' && sub === 0 ? 'border-primary bg-primary/25 text-white' : 'border-white/10 text-white/70',
-                  )}
-                >
-                  {q === 'What next?' && sub === 0 && (
-                    <span className="demo-ripple absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
-                  )}
-                  {q}
-                </span>
-              ))}
-            </div>
-          </>
-        ),
-      };
-    }
-    default:
-      return {
-        time: '11:02',
-        body: (
-          <div className="flex flex-col items-center px-3 pt-4">
-            <span className={cn('relative flex h-12 w-12 items-center justify-center rounded-full', sub === 0 ? 'bg-rose-500' : 'bg-white/10')}>
-              {sub === 0 && <span className="demo-ping absolute inset-0 rounded-full bg-rose-500" />}
-              <Mic className="relative h-5 w-5 text-white" />
-            </span>
-            <div className="mt-3 flex h-10 items-center gap-[3px]">
-              {(sub === 0 ? NOISY : CLEAN).map((h, i) => (
-                <span
-                  key={i}
-                  className={cn('w-[3px] rounded-full transition-all duration-700', sub === 0 ? 'bg-rose-300' : 'bg-sky-300')}
-                  style={{ height: `${h}%` }}
-                />
-              ))}
-            </div>
-            {sub >= 1 && (
-              <p className="demo-rise mt-2 text-center text-[11px] text-white">
-                <Typewriter text="“When do I eat lunch?”" speed={35} />
+              <p className="mt-2 text-[15px] font-extrabold" style={{ color: M3.onSurface }}>
+                {current.title}
               </p>
-            )}
-            {sub >= 2 && (
-              <div className="demo-rise mt-3 flex items-start gap-1.5 self-start rounded-2xl rounded-bl-sm bg-white/10 px-2.5 py-1.5 text-[10.5px] text-white">
-                <Bot className="mt-px h-3.5 w-3.5 shrink-0 text-primary" /> Lunch is at 12:00.
-              </div>
-            )}
-          </div>
-        ),
-      };
+              {scene === 'complete' && done > 0 && (
+                <p className="mt-1 text-[10px]" style={{ color: M3.onSurfaceVariant }}>
+                  {TASKS[done - 1].hint}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="mt-24 text-center text-[11px]" style={{ color: M3.onSurfaceVariant }}>
+              Good morning, Ava
+            </p>
+          )}
+          {scene === 'complete' && (
+            <span
+              className={cn('absolute inset-x-4 bottom-[58px] flex h-9 items-center justify-center rounded-full text-[12px] font-bold transition-transform', sub === 0 && 'scale-95')}
+              style={{ background: M3.primary, color: M3.onPrimary }}
+            >
+              Done
+            </span>
+          )}
+        </>
+      ),
+    };
   }
-}
-
-/** Data moving between pieces in each beat. */
-function packets(frame: Frame, lay: Layout): ReactNode {
-  const { scene, sub } = frame;
-  const n = lay.nodes;
-  const k = `${scene}-${sub}`;
-  const nodeL = (id: NodeId): [number, number] => [n[id]![0] - 66, n[id]![1]];
-  const nodeR = (id: NodeId): [number, number] => [n[id]![0] + 66, n[id]![1]];
-  const portalR = (y: number): [number, number] => [lay.portal!.l + lay.portal!.w, y];
-  const portalL = (y: number): [number, number] => [lay.portal!.l, y];
-  if (scene === 'build' && sub === 2)
-    return (
+  const msgs = chatFor(frame).slice(scene === 'voice' ? 4 : 0).slice(-3);
+  const listening = scene === 'voice' && sub === 0;
+  return {
+    time: scene === 'ask' ? '12:45' : '2:10',
+    tab: 'ask',
+    body: (
       <>
-        <Packet key={`${k}a`} from={portalR(270)} to={nodeL('api')} />
-        <Packet key={`${k}b`} from={[n.api![0], n.api![1] + 25]} to={[n.db![0], n.db![1] - 25]} delay={650} />
-      </>
-    );
-  if (scene === 'build' && sub === 3)
-    return <Packet key={k} from={nodeR('db')} to={phoneEdge(lay.phone!, 'left', 120)} color="#86EFAC" delay={500} />;
-  if (scene === 'remind' && sub === 1)
-    return <Packet key={k} from={nodeR('fcm')} to={phoneEdge(lay.phone!, 'left', 40)} color="#FCD34D" duration={800} />;
-  if (scene === 'complete' && sub >= 1) return <Packet key={k} from={phoneEdge(lay.phone!, 'right', 220)} to={portalL(90)} color="#86EFAC" />;
-  if (scene === 'ask' && sub === 1) return <Packet key={k} from={phoneEdge(lay.phone!, 'left', 70)} to={nodeR('api')} />;
-  if (scene === 'ask' && sub === 2) return <Packet key={k} from={phoneEdge(lay.phone!, 'left', 150)} to={nodeR('ai')} />;
-  if (scene === 'ask' && sub === 3) return <Packet key={k} from={nodeR('ai')} to={phoneEdge(lay.phone!, 'left', 170)} color="#86EFAC" />;
-  if (scene === 'voice' && sub === 1)
-    return (
-      <>
-        <Packet key={`${k}a`} from={phoneEdge(lay.phone!, 'right', 80)} to={nodeL('cpp')} color="#7DD3FC" />
-        <Packet key={`${k}b`} from={[n.cpp![0], n.cpp![1] + 25]} to={[n.stt![0], n.stt![1] - 25]} color="#7DD3FC" delay={600} />
-      </>
-    );
-  if (scene === 'voice' && sub === 2) return <Packet key={k} from={nodeL('ai')} to={phoneEdge(lay.phone!, 'right', 200)} color="#86EFAC" />;
-  if (scene === 'voice' && sub === 3) return <Packet key={k} from={nodeR('ai')} to={portalL(120)} color="#86EFAC" delay={400} />;
-  return null;
-}
-
-/* ---------- stage ---------- */
-
-/** Pieces glide to their spot for each beat. */
-const glide: CSSProperties = { transitionDuration: '800ms', transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)' };
-
-const RoutineStage = ({ frame }: { frame: Frame }) => {
-  const lay = layoutFor(frame);
-  const portal = portalContent(frame);
-  const phone = phoneContent(frame);
-  const portalRect = lay.portal ?? { l: -330, t: 14, w: 300, h: 292 };
-
-  return (
-    <StageShell>
-      <ScaledCanvas width={W} height={H}>
-        <div className="absolute inset-0 overflow-hidden rounded-xl border border-white/10 bg-[#0d0f14]">
-          {/* parent web portal */}
-          <div
-            className="absolute overflow-hidden rounded-xl border border-white/10 bg-[#13151b] transition-all"
-            style={{ ...glide, left: portalRect.l, top: portalRect.t, width: portalRect.w, height: portalRect.h, opacity: lay.portal ? 1 : 0 }}
-          >
-            <div className="flex h-7 items-center gap-2 border-b border-white/5 bg-white/[0.03] px-3">
-              <span className="h-2 w-2 rounded-full bg-white/20" />
-              <span className="h-2 w-2 rounded-full bg-white/20" />
-              <span className="ml-1 flex-1 truncate rounded bg-black/30 px-2 py-0.5 font-mono text-[9.5px] text-white/45">
-                Parent portal
-              </span>
+        <div className="flex flex-col gap-1.5 px-2.5 pt-2">
+          {msgs.map((m, i) => (
+            <div
+              key={i}
+              className={cn(
+                'demo-fade max-w-[85%] rounded-2xl px-2.5 py-1.5 text-[10.5px] font-semibold',
+                m.who === 'kid' ? 'self-end rounded-br-md' : 'self-start rounded-bl-md',
+              )}
+              style={m.who === 'kid' ? { background: M3.primary, color: M3.onPrimary } : { background: M3.surfaceContainerHigh, color: M3.onSurface }}
+            >
+              {scene === 'voice' && m.who === 'kid' ? <Typewriter text={m.text} speed={35} /> : m.text}
             </div>
-            <div key={frame.scene} className="demo-fade">
-              <p className="px-3 pt-2.5 text-[12px] font-medium text-white">{portal.title}</p>
-              {portal.body}
-            </div>
-          </div>
-
-          {/* backend services */}
-          {(Object.keys(NODE_INFO) as NodeId[]).map((id) => {
-            const pos = lay.nodes[id];
-            const [x, y] = pos ?? NODE_HOME[id];
-            const info = NODE_INFO[id];
-            const Icon = info.icon;
-            const on = lay.active.includes(id);
-            return (
-              <div
-                key={id}
-                className={cn(
-                  'absolute flex h-[50px] w-[132px] items-center gap-2 rounded-xl border bg-[#13151b] px-2.5 transition-all',
-                  on ? 'border-primary/70 shadow-[0_0_22px_rgba(125,160,255,0.35)]' : 'border-white/10',
-                )}
-                style={{ ...glide, left: x - 66, top: y - 25, opacity: pos ? 1 : 0, transform: pos ? 'none' : 'scale(0.9)' }}
-              >
-                <Icon className={cn('h-4 w-4 shrink-0 transition-colors', on ? 'text-primary' : 'text-white/45')} />
-                <span className="min-w-0">
-                  <span className="block truncate text-[11px] text-white">{info.label}</span>
-                  </span>
-                {on && <span className="demo-ping absolute inset-0 rounded-xl border border-primary/40" />}
-              </div>
-            );
-          })}
-
-          {/* child's phone */}
-          <div
-            className="absolute overflow-hidden rounded-[28px] border-[3px] border-[#2a2d36] bg-[#0f1116] transition-all"
-            style={{ ...glide, left: lay.phone ?? 660, top: 8, width: PHONE_W, height: PHONE_H, opacity: lay.phone === null ? 0 : 1 }}
-          >
-            <div className="flex h-6 items-center justify-between px-4 text-[9px] text-white/70">
-              <span key={phone.time} className="demo-fade tabular-nums">
-                {phone.time}
-              </span>
-              <span className="h-3.5 w-12 rounded-full bg-black" />
-              <span>●●●</span>
-            </div>
-            <div key={frame.scene} className="demo-fade">
-              {phone.body}
-            </div>
-          </div>
-
-          {packets(frame, lay)}
+          ))}
         </div>
-      </ScaledCanvas>
-    </StageShell>
+        <div className="absolute inset-x-2.5 bottom-[54px] flex items-center gap-1.5">
+          <span className="flex h-8 flex-1 items-center rounded-full px-3 text-[10px]" style={{ background: M3.surfaceContainerHigh, color: M3.onSurfaceVariant }}>
+            {listening ? 'Listening…' : 'Ask a question'}
+          </span>
+          <span
+            className={cn('flex h-8 w-8 items-center justify-center rounded-full', listening && 'demo-pulse')}
+            style={{ background: listening ? '#B3261E' : M3.primaryContainer, color: listening ? '#fff' : M3.onPrimaryContainer }}
+          >
+            <Mic className="h-4 w-4" />
+          </span>
+        </div>
+      </>
+    ),
+  };
+}
+
+const Phone = ({ frame }: { frame: Frame }) => {
+  const view = phoneView(frame);
+  return (
+    <div
+      className="absolute overflow-hidden rounded-[30px] border-[4px] border-[#2B2930] shadow-xl shadow-black/20"
+      style={{ left: 444, top: 6, width: 168, height: 308, background: M3.surface }}
+    >
+      {/* status bar with punch-hole camera */}
+      <div className="relative flex h-6 items-center justify-between px-4 text-[9.5px] font-semibold" style={{ color: M3.onSurface }}>
+        <span className="tabular-nums">{view.time}</span>
+        <span className="absolute left-1/2 top-1.5 h-3 w-3 -translate-x-1/2 rounded-full bg-black" />
+        <span className="flex items-center gap-1">
+          <Wifi className="h-2.5 w-2.5" />
+          <BatteryFull className="h-3 w-3" />
+        </span>
+      </div>
+      <p className="px-4 pb-1 pt-1 text-[14px] font-extrabold" style={{ color: M3.onSurface }}>
+        {view.tab === 'ask' ? 'Ask' : 'My day'}
+      </p>
+      {view.body}
+      {/* navigation bar + gesture handle */}
+      <div className="absolute inset-x-0 bottom-0 pb-1.5 pt-1.5" style={{ background: M3.surfaceContainer }}>
+        <div className="flex justify-around text-[8.5px] font-semibold" style={{ color: M3.onSurfaceVariant }}>
+          {(
+            [
+              [CalendarDays, 'Today', view.tab === 'today'],
+              [MessageCircle, 'Ask', view.tab === 'ask'],
+              [UserRound, 'Me', false],
+            ] as const
+          ).map(([Icon, label, on]) => (
+            <span key={label} className="flex flex-col items-center gap-0.5">
+              <span
+                className="flex h-5 w-10 items-center justify-center rounded-full transition-colors"
+                style={on ? { background: M3.primaryContainer, color: M3.onPrimaryContainer } : undefined}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+              {label}
+            </span>
+          ))}
+        </div>
+        <div className="mx-auto mt-1 h-1 w-14 rounded-full bg-black/40" />
+      </div>
+    </div>
   );
 };
+
+/** Parent's web portal and the child's Android app side by side; only their screens change. */
+const RoutineStage = ({ frame }: { frame: Frame }) => (
+  <StageShell>
+    <ScaledCanvas width={W} height={H}>
+      <div className="absolute inset-0 overflow-hidden rounded-xl border border-white/10 bg-[#E8E6EC] [font-family:'Nunito',sans-serif]">
+        <Portal frame={frame} />
+        <Phone frame={frame} />
+      </div>
+    </ScaledCanvas>
+  </StageShell>
+);
 
 export default RoutineStage;
